@@ -1,0 +1,115 @@
+.Match {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+.Page1,
+.Page2,
+.Page3,
+.Page4 {
+  position: initial;
+  z-index: 10;
+}
+
+.Title {
+  position: initial;
+  z-index: 10;
+}
+
+.Background1 {
+  position: absolute;
+  z-index: 0;
+  height: 30vh;
+  width: 100%;
+  top: 0;
+  background: linear-gradient(#fffaee, #fbd0ca)
+}
+
+.Background2 {
+  position: absolute;
+  z-index: 1;
+  height: 75vh;
+  width: 100%;
+  top: 25vh;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  background-color: #fff;
+}
+
+.Page1 .SelectNumPersons {
+  display: flex;
+  flex-direction: column;
+  margin: 5vh 10vw;
+}
+
+.Page2 .InputFriendUsername {
+  margin: 5vh 10vw;
+}
+
+.Page3 .InputMatchConditions {
+  display: flex;
+  flex-direction: column;
+  margin: 5vh 8vw;
+}
+
+.Page3 .InputMatchConditions .SelectUniversity {
+  display: flex;
+  flex-direction: column;
+  width: 84vw;
+  padding: 0 10px;
+}
+
+.Page3 .InputMatchConditions .SelectUniversity > p {
+  font-family: 'Noto Sans';
+  font-size: 18px;
+  font-weight: 600;
+  font-stretch: extra-condensed;
+}
+
+.Page3 .InputMatchConditions .SelectUniversity > p > span {
+  font-size: 17px;
+  font-weight: normal;
+}
+
+.Page3 .InputMatchConditions .SelectUniversity .SelectUniversityButtons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.Page3 .InputMatchConditions .InputAgeRange {
+  display: flex;
+  flex-direction: column;
+  width: 80vw;
+  padding: 0 10px;
+}
+
+.Page3 .InputMatchConditions .InputAgeRange > p {
+  font-family: 'Noto Sans';
+  font-size: 18px;
+  font-weight: 600;
+  font-stretch: extra-condensed;
+  margin-bottom: 50px;
+}
+
+.Page3 .InputMatchConditions .InputAgeRange > p > span {
+  font-size: 17px;
+  font-weight: normal;
+}
+
+.Page4 .MatchNotification {
+  display: flex;
+  margin: 5vh 10vw;
+}
+
+.NavigationButton {
+  position: absolute;
+  z-index: 11;
+  bottom: 2vh;
+  margin: 10vh 10vw;
+  color: inherit;
+}

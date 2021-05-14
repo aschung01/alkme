@@ -1,0 +1,9 @@
+.Header {
+  display: flex;
+  flex-direction: row;
+  height: 8vh;
+}
+
+.HeaderIcon {
+  padding: 7px;
+}

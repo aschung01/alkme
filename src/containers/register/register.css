@@ -1,0 +1,55 @@
+.RegisterContainer {
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  background: linear-gradient(#fbd0ca, 70%, #f7a8ad);
+  position: relative;
+  height: 90vh;
+}
+
+.Page1 .InputEmail {
+  margin: 5vh 10vw;
+
+}
+
+.Page2 .InputPassword {
+  margin: 5vh 10vw 2vh;
+}
+
+.Page2 .CheckPassword {
+  margin: 2vh 10vw 5vh;
+}
+
+.Page3 .InputUsername {
+  margin: 5vh 10vw;
+
+}
+
+.Page4 .InputUserInfo {
+  margin: 5vh 10vw;
+}
+
+.Page4 .InputUserInfo .SelectUniversity {
+  display: flex;
+}
+
+.Page4 .InputUserInfo .SelectUniversity > p {
+  font-weight: 600;
+  margin-right: 30px;
+}
+
+.Page4 .InputUserInfo .SelectGender .RadioSelect {
+  padding: 0 10px;
+}
+
+.Page4 .InputUserInfo .SelectGender > p {
+  font-weight: 600;
+}
+
+.Page4 .InputUserInfo .SelectAge > p {
+  font-weight: 600;
+}
+
+.NavigationButton {
+  position: absolute;
+  top: 75.5vh;
+}

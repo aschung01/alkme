@@ -1,0 +1,30 @@
+.Login {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.LoginContainer {
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  background: linear-gradient(#fbd0ca, 70%, #f7a8ad);
+  position: relative;
+  height: 90vh;
+}
+
+.InputLoginInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 5vh 10vw;
+}
+
+.InputLoginPassword{
+  margin: 5vh 0;
+}
+
+.LoginButton {
+  position: absolute;
+  top: 85.5vh;
+  left: 10vw;
+}
