@@ -1,18 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { RouteButton } from '../../components/buttons/buttons.js';
-import { Title } from '../../components/title/title';
 import './home.css';
-import { currentUsername } from '../../firebase/firebaseAuth';
 
-function Home() {
+export const Home = (props) => {
+  const {currentUserInfo} = props;
+  const homeTitleText = `${currentUserInfo.userInfo.username}님 환영합니다!`;
+
   return (
     <div className="Home">
       <span className="Dot1" />
       <span className="Dot2" />
       <span className="Dot3" />
       <span className="Dot4" />
-      <div className="HomeTitle">{getHomeTitle()}</div>
+      <div className="HomeTitle" style={{height:'10vh', display: 'flex', alignContent: 'center'}}><span style={{fontSize: '20px', fontWeight: 'bold', margin: 'auto'}}>{homeTitleText}</span></div>
       <div className="Routes">
         <Link to="/terms_of_use" className="AboutServiceButton">
           <RouteButton background="#FBD0CAE5" buttonText="서비스 이용방법" />
@@ -27,11 +28,3 @@ function Home() {
     </div>
   );
 }
-
-const getHomeTitle = () => {
-   const username = currentUsername();
-  const homeTitleText = `${username}님 환영합니다!`;
-  return <Title titleText={homeTitleText} />;
-};
-
-export default Home;

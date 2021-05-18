@@ -13,9 +13,11 @@ import {
   inputMatchConditionsReducer,
   matchInfoReducer,
 } from '../containers/match/matchSlice.js';
+import { currentUserInfoReducer } from '../firebase/firebaseAuth';
 
 export const store = createStore(
   combineReducers({
+    currentUserInfo: currentUserInfoReducer,
     registerPage: registerPageReducer,
     registerPageEmail: registerPageEmailReducer,
     registerPagePassword: registerPagePasswordReducer,

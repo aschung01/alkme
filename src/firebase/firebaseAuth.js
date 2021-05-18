@@ -1,9 +1,11 @@
 import { auth } from './initFirebase';
-import { getCurrentUsername, registerUserInfo } from './firebaseDb';
+import { registerUserInfo } from './firebaseDb';
 
 export const currentUser = auth.currentUser;
 
-export const currentUsername = auth.onAuthStateChanged(user => getCurrentUsername(user));
+export const onAuthStateChanged = (func) => {
+  auth.onAuthStateChanged(func);
+};
 
 export const registerUser = (email, password, userInfo) =>
   auth
@@ -34,3 +36,49 @@ export const loginUser = (email, password) =>
       console.log(errorCode);
       console.log(errorMessage);
     });
+
+export const loginActionCreator = () => {
+  return {
+    type: 'currentUserInfo/login',
+  };
+};
+
+export const logoutActionCreator = () => {
+  return {
+    type: 'currentUserInfo/logout',
+  };
+};
+
+export const getCurrentUserInfo = (userInfo) => {
+  return {
+    type: 'currentUserInfo/getCurrentUserInfo',
+    payload: userInfo,
+  };
+};
+
+const initialState = {
+  loggedIn: false,
+  userInfo: {},
+};
+
+export const currentUserInfoReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case 'currentUserInfo/login':
+      return {
+        ...state,
+        loggedIn: true,
+      };
+    case 'currentUserInfo/logout':
+      return {
+        ...state,
+        loggedIn: false,
+      };
+    case 'currentUserInfo/getCurrentUserInfo':
+      return {
+        ...state,
+        userInfo: action.payload,
+      };
+    default:
+      return state;
+  }
+};

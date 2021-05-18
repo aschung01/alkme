@@ -1,19 +1,46 @@
-import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 import { Landing } from '../containers/landing/landing.js';
-import {Register } from '../containers/register/register.js'
-import Home from '../containers/home/home.js';
+import { Register } from '../containers/register/register.js';
+import { Home } from '../containers/home/home.js';
 import Match from '../containers/match/match.js';
 import { Login } from '../containers/login/login.js';
+import {
+  onAuthStateChanged,
+  loginActionCreator,
+  logoutActionCreator,
+  getCurrentUserInfo,
+} from '../firebase/firebaseAuth.js';
+import { getUserInfoFromDb } from '../firebase/firebaseDb';
 
-function App(props) {
+export const App = (props) => {
   const { state, dispatch } = props;
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged((user) => {
+      if (user) {
+        dispatch(loginActionCreator());
+        getUserInfoFromDb(user).then((userInfo) =>
+          dispatch(getCurrentUserInfo(userInfo))
+        );
+      } else {
+        dispatch(logoutActionCreator());
+      }
+    });
+
+    return unsubscribe;
+  }, [dispatch]);
 
   return (
     <div className="App">
       <Router>
         <Switch>
-          <Route path="/match">
+          <PrivateRoute path="/match" currentUserInfo={state.currentUserInfo}>
             <Match
               matchPage={state.matchPage}
               matchPageFriendUsername={state.matchPageFriendUsername}
@@ -21,12 +48,12 @@ function App(props) {
               matchInfo={state.matchInfo}
               dispatch={dispatch}
             />
-          </Route>
-          <Route path="/home">
-            <Home />
-          </Route>
+          </PrivateRoute>
+          <PrivateRoute path="/home" currentUserInfo={state.currentUserInfo}>
+            <Home currentUserInfo={state.currentUserInfo} />
+          </PrivateRoute>
           <Route path="/register">
-            <Register 
+            <Register
               registerPage={state.registerPage}
               registerPageEmail={state.registerPageEmail}
               registerPagePassword={state.registerPagePassword}
@@ -37,10 +64,7 @@ function App(props) {
             />
           </Route>
           <Route path="/login">
-            <Login 
-              loginPage={state.loginPage}
-              dispatch={dispatch}
-            />
+            <Login loginPage={state.loginPage} dispatch={dispatch} />
           </Route>
           <Route path="/">
             <Landing />
@@ -49,6 +73,23 @@ function App(props) {
       </Router>
     </div>
   );
-}
+};
 
-export default App;
+const PrivateRoute = ({ children, currentUserInfo, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={() =>
+        currentUserInfo.loggedIn ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: '/',
+            }}
+          />
+        )
+      }
+    />
+  );
+};
