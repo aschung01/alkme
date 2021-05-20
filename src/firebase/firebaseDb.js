@@ -1,5 +1,5 @@
 import { db } from './initFirebase';
-import { currentUser } from './firebaseAuth';
+import { onAuthStateChanged } from './firebaseAuth';
 
 export const registerUserInfo = (uid, userInfo) =>
   db.ref('users').child(uid).set(userInfo);
@@ -44,7 +44,7 @@ export const checkFriendUsernameAvailable = (username) =>
     });
 
 export const updateUserMatchInfo = (matchInfo) => {
-  if (currentUser)
-    db.ref('usersMatchInfo').child(currentUser.uid).set(matchInfo);
-  else console.log('User not logged in');
+  onAuthStateChanged((user) => {
+    if (user) db.ref('usersMatchInfo').child(user.uid).set(matchInfo);
+  });
 };

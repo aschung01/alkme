@@ -1,8 +1,6 @@
 import { auth } from './initFirebase';
 import { registerUserInfo } from './firebaseDb';
 
-export const currentUser = auth.currentUser;
-
 export const onAuthStateChanged = (func) => {
   auth.onAuthStateChanged(func);
 };

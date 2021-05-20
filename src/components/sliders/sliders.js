@@ -9,6 +9,17 @@ const useStyles = makeStyles({
   },
 });
 
+const ageMarks = [
+  {
+    value: 20,
+    label: '20',
+  },
+  {
+    value: 29,
+    label: '29',
+  }
+]
+
 const CustomSlider = withStyles({
   root: {
     color: '#EF515F',
@@ -33,6 +44,10 @@ const CustomSlider = withStyles({
   rail: {
     height: 1,
   },
+  markLabel: {
+    fontSize: '16px',
+    color: 'black',
+  },
   valueLabel: {
     left: 'calc(-50% + 14px)',
   },
@@ -53,6 +68,7 @@ export const InputRangeSlider = (props) => {
         max={29}
         value={ageRange}
         onChange={onChange}
+        marks={ageMarks}
         valueLabelDisplay="auto"
         getAriaValueText={valueText}
       />
@@ -71,6 +87,7 @@ export const InputSlider = (props) => {
         max={max}
         value={value}
         onChange={onChange}
+        marks={ageMarks}
         valueLabelDisplay="auto"
         getAriaValueText={valueText}
       />

@@ -157,7 +157,10 @@ const getNavigationButton = (props) => {
           />
         );
     case 3:
-      if (!matchConditions.enableNavigationButton)
+      if (
+        !matchConditions.enableNavigationButton ||
+        matchConditions.selectedUniversity.length === 0
+      )
         return <DisabledNavigationButton buttonText="다음" />;
       else
         return (
@@ -172,6 +175,7 @@ const getNavigationButton = (props) => {
             }}
           />
         );
+
     case 4:
       return (
         <Link to="/home" style={{ textDecoration: 'none' }}>
@@ -180,7 +184,6 @@ const getNavigationButton = (props) => {
             onClick={() => {
               dispatch(jumpToPage(1));
               updateUserMatchInfo(matchInfo);
-              console.log(matchInfo);
             }}
           />
         </Link>
@@ -294,10 +297,9 @@ const MatchConditionsPage = (props) => {
         </div>
         <div className="InputAgeRange">
           <p>
-            나이 <span>선택</span>
+            나이 범위 <span>선택</span>
           </p>
           <InputRangeSlider
-            labelText="나이 선택"
             onChange={(event, newAgeRange) => {
               dispatch(updateAgeRange(newAgeRange));
               dispatch(enableNavigationButton());
