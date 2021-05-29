@@ -5,7 +5,13 @@ export const Title = (props) => {
   const { titleText, titleHelperText } = props;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', margin: '0 25px' }}>
-      <p style={{ fontSize: 20, fontWeight: 'bold', fontFamily: 'Noto-Sans' }}>
+      <p
+        style={{
+          fontSize: '20px',
+          fontWeight: 'bold',
+          fontFamily: 'Noto-Sans',
+        }}
+      >
         {titleText.split('\n').map((line) => {
           return (
             <span key={line}>
@@ -19,6 +25,31 @@ export const Title = (props) => {
         <p style={{ fontSize: '10px', fontFamily: 'Noto-Sans' }}>
           {titleHelperText}
         </p>
+      )}
+    </div>
+  );
+};
+
+export const SmallTitle = (props) => {
+  const { titleText, titleHelperText } = props;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <p style={{ fontSize: '15px', fontFamily: 'Noto-Sans' }}>
+        {titleText.split('\n').map((line) => {
+          return (
+            <span key={line}>
+              {line}
+              <br />
+            </span>
+          );
+        })}
+      </p>
+      {titleHelperText ? (
+        <p style={{ fontSize: '10px', fontFamily: 'Noto-Sans' }}>
+          {titleHelperText}
+        </p>
+      ) : (
+        <div style={{ height: '0px' }} />
       )}
     </div>
   );

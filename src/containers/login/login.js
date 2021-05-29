@@ -37,6 +37,7 @@ export const Login = (props) => {
                 dispatch(updateLoginEmail(e.target.value));
               }}
               label="이메일"
+              width="80vw"
             />
           </div>
           <div className="InputLoginPassword">

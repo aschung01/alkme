@@ -19,7 +19,7 @@ const textFieldStyles = makeStyles({
     justifyContent: 'center',
     marginLeft: 'auto',
     marginRight: 'auto',
-    width: '80vw',
+    width: (props) => props.width,
   },
 });
 
@@ -54,7 +54,7 @@ const passwordTextFieldStyles = makeStyles((theme) => ({
 
 export const InputTextField = (props) => {
   const { onChange, error, label, helperText } = props;
-  const classes = textFieldStyles();
+  const classes = textFieldStyles(props);
 
   return (
     <form
@@ -80,18 +80,17 @@ export const EmailInputField = (props) => {
     emailAddress,
     onChangeField,
     onChangeSelect,
-    regexError,
-    inavailableError,
+    error,
     label,
     helperText,
   } = props;
   const classes = emailTextFieldStyles();
 
   return (
-    <div className="EmailInputField">
+    <div className="EmailInputField" style={{width: '100%'}}>
       <div
         className="EmailInput"
-        style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'row', width: '100%' }}
       >
         <form
           className={classes.root}
@@ -103,7 +102,7 @@ export const EmailInputField = (props) => {
             fullWidth={true}
             onChange={(e) => onChangeField(e.target.value)}
             required={true}
-            error={regexError || inavailableError}
+            error={error}
             label={label}
           />
         </form>
@@ -114,8 +113,8 @@ export const EmailInputField = (props) => {
           onChange={(e) => onChangeSelect(e.target.value)}
         />
       </div>
-      <FormHelperText error={regexError || inavailableError}>
-        {regexError || inavailableError ? helperText : ''}
+      <FormHelperText error={error}>
+        {error ? helperText : ''}
       </FormHelperText>
     </div>
   );
@@ -180,8 +179,7 @@ EmailInputField.propTypes = {
   emailAddress: PropTypes.string.isRequired,
   onChangeField: PropTypes.func.isRequired,
   onChangeSelect: PropTypes.func.isRequired,
-  regexError: PropTypes.bool.isRequired,
-  inavailableError: PropTypes.bool.isRequired,
+  error: PropTypes.bool.isRequired,
   label: PropTypes.string.isRequired,
   helperText: PropTypes.string.isRequired,
 };

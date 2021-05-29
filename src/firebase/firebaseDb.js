@@ -1,8 +1,21 @@
-import { db } from './initFirebase';
-import { onAuthStateChanged } from './firebaseAuth';
+import { db, auth } from './initFirebase';
+import {
+  onAuthStateChanged,
+  user,
+  updateCurrentUserUsername,
+} from './firebaseAuth';
 
 export const registerUserInfo = (uid, userInfo) =>
   db.ref('users').child(uid).set(userInfo);
+
+export const updateDbUserEmail = (uid, email) => {
+  db.ref('users').child(uid).child('email').set(email);
+};
+
+export const updateDbUsername = (username) => {
+  db.ref('users').child(auth.currentUser.uid).child('username').set(username);
+  updateCurrentUserUsername(username);
+};
 
 export const getUserInfoFromDb = (user) =>
   db

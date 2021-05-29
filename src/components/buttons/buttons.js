@@ -27,22 +27,9 @@ const textButtonStyles = makeStyles({
     borderRadius: 30,
     color: 'black',
     height: '5vh',
+    minWidth: '5px',
   },
 });
-
-// const routeButtonStyles = makeStyles({
-//   root: {
-//     '&:focus': {
-//       backgroundColor: (props) => props.background,
-//     },
-//     backgroundColor: (props) => props.background,
-//     border: 0,
-//     borderRadius: 10,
-//     color: 'black',
-//     height: '12vh',
-//     width: '80vw',
-//   },
-// });
 
 const routeButtonStyles = makeStyles({
   root: {
@@ -161,13 +148,25 @@ export const RegisterOrLoginButton = (props) => {
 };
 
 export const TextButton = (props) => {
-  const { buttonText } = props;
+  const { color, onClick, buttonText } = props;
   const classes = textButtonStyles();
-  return (
+  return typeof onClick === undefined ? (
     <Button className={classes.root}>
       <span
         style={{
-          color: 'black',
+          color: color,
+          fontSize: '15px',
+          fontFamily: 'Noto-Sans',
+        }}
+      >
+        {buttonText}
+      </span>
+    </Button>
+  ) : (
+    <Button className={classes.root} onClick={onClick}>
+      <span
+        style={{
+          color: color,
           fontSize: '15px',
           fontFamily: 'Noto-Sans',
         }}
@@ -181,9 +180,12 @@ export const TextButton = (props) => {
 export const RouteButton = (props) => {
   const { buttonText } = props;
   const classes = routeButtonStyles(props);
-  const { root: buttonClass, ...rippleClasses} = classes;
+  const { root: buttonClass, ...rippleClasses } = classes;
   return (
-    <Button className={classes.root} TouchRippleProps={{classes: rippleClasses}}>
+    <Button
+      className={classes.root}
+      TouchRippleProps={{ classes: rippleClasses }}
+    >
       <span
         style={{ fontSize: '19px', fontWeight: '500', fontFamily: 'Noto-Sans' }}
       >
@@ -204,11 +206,11 @@ export const NavigationButton = (props) => {
 };
 
 export const DisabledNavigationButton = (props) => {
-  const { buttonText} = props;
+  const { buttonText } = props;
   const classes = disabledNavigationButtonStyles();
   return (
     <Button className={classes.root} disabled>
-      <span style={{color: 'white'}}>{buttonText}</span>
+      <span style={{ color: 'white' }}>{buttonText}</span>
     </Button>
   );
 };
@@ -231,7 +233,7 @@ export const SelectedMatchBumPersonsButton = (props) => {
       <span>{buttonText}</span>
     </Button>
   );
-}
+};
 
 export const SelectUniversityButton = (props) => {
   const { buttonText, onClick, isActivated } = props;

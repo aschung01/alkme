@@ -9,6 +9,7 @@ import { Landing } from '../containers/landing/landing.js';
 import { Register } from '../containers/register/register.js';
 import { Home } from '../containers/home/home.js';
 import Match from '../containers/match/match.js';
+import { MyInfo } from '../containers/my_info/myInfo';
 import { Login } from '../containers/login/login.js';
 import {
   onAuthStateChanged,
@@ -40,6 +41,14 @@ export const App = (props) => {
     <div className="App">
       <Router>
         <Switch>
+          <PrivateRoute path="/myInfo" currentUserInfo={state.currentUserInfo}>
+            <MyInfo
+              currentUserInfo={state.currentUserInfo}
+              myInfoPage={state.myInfoPage}
+              myInfoSettings={state.myInfoSettings}
+              dispatch={dispatch}
+            />
+          </PrivateRoute>
           <PrivateRoute path="/match" currentUserInfo={state.currentUserInfo}>
             <Match
               matchPage={state.matchPage}

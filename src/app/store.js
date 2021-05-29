@@ -13,6 +13,10 @@ import {
   inputMatchConditionsReducer,
   matchInfoReducer,
 } from '../containers/match/matchSlice.js';
+import {
+  myInfoPageReducer,
+  myInfoSettingsReducer
+} from '../containers/my_info/myInfoSlice'
 import { currentUserInfoReducer } from '../firebase/firebaseAuth';
 
 export const store = createStore(
@@ -24,6 +28,8 @@ export const store = createStore(
     registerPageUsername: registerPageUsernameReducer,
     registerPageUserInfo: registerPageUserInfoReducer,
     loginPage: loginPageReducer,
+    myInfoPage: myInfoPageReducer,
+    myInfoSettings: myInfoSettingsReducer,
     matchPage: matchPageReducer,
     matchPageFriendUsername: matchPageFriendUsernameReducer,
     matchConditions: inputMatchConditionsReducer,
