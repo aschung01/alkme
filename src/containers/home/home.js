@@ -9,7 +9,6 @@ export const Home = (props) => {
   const { currentUserInfo } = props;
   const homeTitleText = `${currentUserInfo.userInfo.username}님 환영합니다!`;
 
-  const myInfoClick = (e) => {};
   const feedbackClick = (e) => {};
   const logoutClick = (e) => {
     logout();

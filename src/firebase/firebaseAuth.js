@@ -1,5 +1,9 @@
 import { auth, emailCredential } from './initFirebase';
-import { registerUserInfo, updateDbUserEmail } from './firebaseDb';
+import {
+  registerUserInfo,
+  updateDbUserEmail,
+  updateDbUserPassword,
+} from './firebaseDb';
 
 export const user = auth.currentUser;
 
@@ -54,12 +58,24 @@ export const reauthenticateUser = (password) => {
     });
 };
 
-export const updateAuthUserEmail = (email) =>
+export const updateAuthUserEmail = (email, dispatch) =>
   auth.currentUser
     .updateEmail(email)
     .then(() => {
       updateDbUserEmail(auth.currentUser.uid, email);
-      updateCurrentUserEmail(email);
+      dispatch(updateCurrentUserEmail(email));
+    })
+    .catch((error) => {
+      console.log(error.code);
+      console.log(error.message);
+    });
+
+export const updateAuthUserPassword = (password, dispatch) =>
+  auth.currentUser
+    .updatePassword(password)
+    .then(() => {
+      updateDbUserPassword(auth.currentUser.uid, password);
+      dispatch(updateCurrentUserPassword(password));
     })
     .catch((error) => {
       console.log(error.code);
@@ -91,35 +107,42 @@ const updateCurrentUserEmail = (email) => {
   return {
     type: 'currentUserInfo/updateCurrentUserEmail',
     payload: email,
-  }
+  };
 };
 
 const updateCurrentUserPassword = (password) => {
   return {
     type: 'currentUserInfo/updateCurrentUserPassword',
     payload: password,
-  }
+  };
 };
 
 export const updateCurrentUserUsername = (username) => {
   return {
     type: 'currentUserInfo/updateCurrentUserUsername',
     payload: username,
-  }
+  };
+};
+
+export const updateCurrentUserGender = (gender) => {
+  return {
+    type: 'currentUserInfo/updateCurrentUserGender',
+    payload: gender,
+  };
 };
 
 export const updateCurrentUserUniversity = (university) => {
   return {
     type: 'currentUserInfo/updateCurrentUserUniversity',
     payload: university,
-  }
+  };
 };
 
 export const updateCurrentUserAge = (age) => {
   return {
     type: 'currentUserInfo/updateCurrentUserAge',
     payload: age,
-  }
+  };
 };
 
 const initialState = {
@@ -166,6 +189,14 @@ export const currentUserInfoReducer = (state = initialState, action) => {
         userInfo: {
           ...state.userInfo,
           username: action.payload,
+        },
+      };
+    case 'currentUserInfo/updateCurrentUserGender':
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          gender: action.payload,
         },
       };
     case 'currentUserInfo/updateCurrentUserUniversity':

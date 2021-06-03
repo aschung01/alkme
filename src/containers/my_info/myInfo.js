@@ -10,6 +10,7 @@ import {
   PasswordInputField,
   InputTextField,
 } from '../../components/input_text_field/input_text_field';
+import { RadioSelect } from '../../components/radio_select/radio_select';
 import { SmallTitle } from '../../components/title/title';
 import './myInfo.css';
 import {
@@ -30,17 +31,34 @@ import {
   checkSettingsUsernameRegex,
   isSettingsUsernameAvailable,
   isSettingsUsernameNew,
+  updateSettingsGender,
   updateSettingsUniversity,
   updateSettingsAge,
+  updateSettingsInputPassword,
+  updateSettingsCheckPassword,
+  checkSettingsPasswordRegexAndMatch,
+  updateSettingsPassword,
+  checkSettingsPasswordRegex1,
+  checkSettingsPasswordMatch,
+  isSettingsPasswordNew,
+  cancelSettingsPasswordUpdate,
 } from './myInfoSlice';
 import {
   reauthenticateUser,
   updateAuthUserEmail,
+  updateAuthUserPassword,
+  updateCurrentUserGender,
+  updateCurrentUserUsername,
+  updateCurrentUserUniversity,
+  updateCurrentUserAge,
 } from '../../firebase/firebaseAuth';
 import {
   checkAvailableEmail,
   checkAvailableUsername,
+  updateDbUserGender,
+  updateDbUserAge,
   updateDbUsername,
+  updateDbUserUniversity,
 } from '../../firebase/firebaseDb';
 import { InputSlider } from '../../components/sliders/sliders';
 
@@ -244,7 +262,7 @@ const ChangePersonalInfoBox = (props) => {
           }}
         />
       </div>
-      <div className="BoxElementWithButton">
+      <div style={{ alignSelf: 'flex-end' }}>
         <TextButton
           buttonText="비밀번호 변경"
           color="#EF515F"
@@ -305,7 +323,7 @@ const ChangeEmailBox = (props) => {
               dispatch(isSettingsEmailAvailable(emailAvailable));
             } else {
               dispatch(updateSettingsEmail(userEmail));
-              updateAuthUserEmail(userEmail);
+              updateAuthUserEmail(userEmail, dispatch);
               dispatch(jumpPersonalInfoPage(3));
             }
           }}
@@ -361,6 +379,9 @@ const ChangeUsernameBox = (props) => {
               dispatch(isSettingsUsernameAvailable(usernameAvailable));
             } else {
               updateDbUsername(myInfoSettings.personalInfo.username);
+              dispatch(
+                updateCurrentUserUsername(myInfoSettings.personalInfo.username)
+              );
               dispatch(jumpPersonalInfoPage(3));
             }
           }}
@@ -376,66 +397,13 @@ const ChangeGenderBox = (props) => {
     <div className="PersonalInfoBox">
       <p className="BoxTitleElement">개인정보 {'>'} 성별</p>
       <SmallTitle titleText="성별을 입력해주세요" />
-      <InputTextField
-        onChange={(e) => {
-          dispatch(updateSettingsUsername(e.target.value));
-          dispatch(checkSettingsUsernameRegex(e.target.value));
-        }}
-        error={
-          myInfoSettings.usernameRegexError ||
-          myInfoSettings.usernameInavailableError
-        }
-        label="닉네임"
-        helperText={myInfoSettings.usernameHelperText}
-        width="70vw"
-      />
-      <div
-        className="BoxElementWithButton"
-        style={{ flexWrap: 'wrap', marginTop: '15px' }}
-      >
-        <TextButton
-          buttonText="취소"
-          color="#EF515F"
-          onClick={() => {
-            dispatch(jumpPersonalInfoPage(3));
-          }}
-        />
-        <TextButton
-          buttonText="확인"
-          color="#EF515F"
-          onClick={async (e) => {
-            const newUsername =
-              myInfoSettings.personalInfo.username !==
-              currentUserInfo.userInfo.username;
-            const usernameAvailable = await checkAvailableUsername(
-              myInfoSettings.personalInfo.username
-            );
-            if (!newUsername) {
-              dispatch(isSettingsUsernameNew(newUsername));
-            } else if (!usernameAvailable) {
-              dispatch(isSettingsUsernameAvailable(usernameAvailable));
-            } else {
-              updateDbUsername(myInfoSettings.personalInfo.username);
-              dispatch(jumpPersonalInfoPage(3));
-            }
-          }}
+      <div style={{ paddingLeft: '10px' }}>
+        <RadioSelect
+          value={myInfoSettings.personalInfo.gender}
+          values={['남성', '여성']}
+          onChange={(e) => dispatch(updateSettingsGender(e.target.value))}
         />
       </div>
-    </div>
-  );
-};
-
-const ChangeUniversityBox = (props) => {
-  const { currentUserInfo, myInfoSettings, dispatch } = props;
-  return (
-    <div className="PersonalInfoBox">
-      <p className="BoxTitleElement">개인정보 {'>'} 대학</p>
-      <SmallTitle titleText="대학 정보를 입력해주세요" />
-      <InputSelect
-        itemValues={['서울대', '연세대', '고려대']}
-        value={myInfoSettings.personalInfo.university}
-        onChange={(e) => dispatch(updateSettingsUniversity(e.target.value))}
-      />
       <div
         className="BoxElementWithButton"
         style={{ flexWrap: 'wrap', marginTop: '15px' }}
@@ -451,6 +419,54 @@ const ChangeUniversityBox = (props) => {
           buttonText="확인"
           color="#EF515F"
           onClick={(e) => {
+            updateDbUserGender(myInfoSettings.personalInfo.gender);
+            dispatch(
+              updateCurrentUserGender(myInfoSettings.personalInfo.gender)
+            );
+            dispatch(jumpPersonalInfoPage(3));
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+const ChangeUniversityBox = (props) => {
+  const { currentUserInfo, myInfoSettings, dispatch } = props;
+  return (
+    <div className="PersonalInfoBox">
+      <p className="BoxTitleElement">개인정보 {'>'} 대학</p>
+      <SmallTitle titleText="대학 정보를 입력해주세요" />
+      <div style={{ paddingLeft: '10px', display: 'flex' }}>
+        <p style={{ fontWeight: 'bold' }}>대학 선택</p>
+        <InputSelect
+          itemValues={['서울대', '연세대', '고려대']}
+          value={myInfoSettings.personalInfo.university}
+          onChange={(e) => dispatch(updateSettingsUniversity(e.target.value))}
+        />
+      </div>
+
+      <div
+        className="BoxElementWithButton"
+        style={{ flexWrap: 'wrap', marginTop: '15px' }}
+      >
+        <TextButton
+          buttonText="취소"
+          color="#EF515F"
+          onClick={() => {
+            dispatch(jumpPersonalInfoPage(3));
+          }}
+        />
+        <TextButton
+          buttonText="확인"
+          color="#EF515F"
+          onClick={(e) => {
+            updateDbUserUniversity(myInfoSettings.personalInfo.university);
+            dispatch(
+              updateCurrentUserUniversity(
+                myInfoSettings.personalInfo.university
+              )
+            );
             dispatch(jumpPersonalInfoPage(3));
           }}
         />
@@ -465,7 +481,7 @@ const ChangeAgeBox = (props) => {
     <div className="PersonalInfoBox">
       <p className="BoxTitleElement">개인정보 {'>'} 나이</p>
       <SmallTitle titleText="나이를 입력해주세요" />
-      <div style={{width: '90%', alignSelf: 'center'}}>
+      <div style={{ width: '90%', alignSelf: 'center' }}>
         <InputSlider
           min={20}
           max={29}
@@ -488,6 +504,8 @@ const ChangeAgeBox = (props) => {
           buttonText="확인"
           color="#EF515F"
           onClick={(e) => {
+            updateDbUserAge(myInfoSettings.personalInfo.age);
+            dispatch(updateCurrentUserAge(myInfoSettings.personalInfo.age));
             dispatch(jumpPersonalInfoPage(3));
           }}
         />
@@ -503,9 +521,31 @@ const ChangePasswordBox = (props) => {
       <p className="BoxTitleElement">개인정보 {'>'} 비밀번호 변경</p>
       <SmallTitle
         titleText="새 비밀번호를 입력해주세요"
-        titleHelperText="비밀번호는 영문 대소문자 및 숫자를 포함해 8자 이상이어야 합니다"
+        titleHelperText={
+          '비밀번호는 영문 대소문자 및 숫자를 포함해\n 8자 이상이어야 합니다'
+        }
       />
-
+      <PasswordInputField
+        label="새 비밀번호"
+        error={myInfoSettings.passwordError1}
+        onChange={(e) => {
+          dispatch(updateSettingsInputPassword(e.target.value));
+          dispatch(updateSettingsPassword(e.target.value));
+          dispatch(checkSettingsPasswordRegex1(e.target.value));
+          if (myInfoSettings.checkPassword !== '')
+            dispatch(checkSettingsPasswordMatch());
+        }}
+        helperText={myInfoSettings.passwordHelperText1}
+      />
+      <PasswordInputField
+        label="비밀번호 확인"
+        error={myInfoSettings.passwordError2}
+        onChange={(e) => {
+          dispatch(updateSettingsCheckPassword(e.target.value));
+          dispatch(checkSettingsPasswordRegexAndMatch());
+        }}
+        helperText={myInfoSettings.passwordHelperText2}
+      />
       <div
         className="BoxElementWithButton"
         style={{ flexWrap: 'wrap', marginTop: '15px' }}
@@ -515,13 +555,25 @@ const ChangePasswordBox = (props) => {
           color="#EF515F"
           onClick={() => {
             dispatch(jumpPersonalInfoPage(3));
+            dispatch(cancelSettingsPasswordUpdate());
           }}
         />
         <TextButton
           buttonText="확인"
           color="#EF515F"
           onClick={(e) => {
-            dispatch(jumpPersonalInfoPage(3));
+            const newPassword =
+              myInfoSettings.personalInfo.password !==
+              currentUserInfo.userInfo.password;
+            if (!newPassword) {
+              dispatch(isSettingsPasswordNew(newPassword));
+            } else {
+              updateAuthUserPassword(
+                myInfoSettings.personalInfo.password,
+                dispatch
+              );
+              dispatch(jumpPersonalInfoPage(3));
+            }
           }}
         />
       </div>

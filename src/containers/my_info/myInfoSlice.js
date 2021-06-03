@@ -19,6 +19,13 @@ export const updateSettingsUsername = (username) => {
   };
 };
 
+export const updateSettingsGender = (gender) => {
+  return {
+    type: 'myInfoSettings/updateSettingsGender',
+    payload: gender,
+  };
+};
+
 export const updateSettingsUniversity = (university) => {
   return {
     type: 'myInfoSettings/updateSettingsUniversity',
@@ -52,8 +59,8 @@ export const checkSettingsEmailRegex = (email) => {
   return {
     type: 'myInfoSettings/checkSettingsEmailRegex',
     payload: validRegex,
-  }
-}
+  };
+};
 
 export const isSettingsEmailAvailable = (emailAvailable) => {
   return {
@@ -66,30 +73,88 @@ export const isSettingsEmailNew = (newEmail) => {
   return {
     type: 'myInfoSettings/isSettingsEmailNew',
     payload: newEmail,
-  }
-}
+  };
+};
 
 export const checkSettingsUsernameRegex = (username) => {
   const validRegex = username.length <= 10;
   return {
     type: 'myInfoSettings/checkSettingsUsernameRegex',
     payload: validRegex,
-  }
-}
+  };
+};
 
 export const isSettingsUsernameAvailable = (available) => {
   return {
     type: 'myInfoSettings/isSettingsUsernameAvailable',
     payload: available,
-  }
-}
+  };
+};
 
 export const isSettingsUsernameNew = (isNew) => {
   return {
     type: 'myInfoSettings/isSettingsUsernameNew',
     payload: isNew,
+  };
+};
+
+export const cancelSettingsPasswordUpdate = () => {
+  return {
+    type: 'myInfoSettings/cancelSettingsPasswordUpdate',
   }
 }
+
+export const checkSettingsPasswordRegex1 = (password) => {
+  const passwordValid = isPasswordValid(password);
+  return {
+    type: 'myInfoSettings/checkSettingsPasswordRegex1',
+    payload: passwordValid,
+  };
+};
+
+export const checkSettingsPasswordRegexAndMatch = () => {
+  return {
+    type: 'myInfoSettings/checkSettingsPasswordRegexAndMatch',
+  };
+};
+
+export const checkSettingsPasswordMatch = () => {
+  return {
+    type: 'myInfoSettings/checkSettingsPasswordMatch',
+  };
+};
+
+export const updateSettingsInputPassword = (password) => {
+  return {
+    type: 'myInfoSettings/updateSettingsInputPassword',
+    payload: password,
+  };
+};
+
+export const updateSettingsCheckPassword = (password) => {
+  return {
+    type: 'myInfoSettings/updateSettingsCheckPassword',
+    payload: password,
+  };
+};
+
+export const isSettingsPasswordNew = (isNew) => {
+  return {
+    type: 'myInfoSettings/isSettingsPasswordNew',
+    payload: isNew,
+  }
+}
+
+const isPasswordValid = (password) => {
+  // Password requirements are as follows:
+  // 8 ~ 64 characters
+  // Min 1 uppercase
+  // Min 1 lowercase
+  // Min 1 numeric number
+  return password.match(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9!@#$%^&*()_=+]{8,64}$/
+  );
+};
 
 const isEmailValid = (emailId) => {
   const regex = /^([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-])+$/;
@@ -101,6 +166,7 @@ const initialSettings = {
     email: '',
     password: '',
     username: '',
+    gender: '',
     university: '',
     age: 0,
   },
@@ -115,8 +181,11 @@ const initialSettings = {
   usernameInavailableError: false,
   usernameHelperText: '',
   inputPassword: '',
-  passwordRegexError: false,
-  passwordHelperText: '',
+  checkPassword: '',
+  passwordError1: false,
+  passwordError2: false,
+  passwordHelperText1: '',
+  passwordHelperText2: '',
 };
 
 export const myInfoSettingsReducer = (settings = initialSettings, action) => {
@@ -145,6 +214,14 @@ export const myInfoSettingsReducer = (settings = initialSettings, action) => {
           username: action.payload,
         },
       };
+    case 'myInfoSettings/updateSettingsGender':
+      return {
+        ...settings,
+        personalInfo: {
+          ...settings.personalInfo,
+          gender: action.payload,
+        },
+      };
     case 'myInfoSettings/updateSettingsUniversity':
       return {
         ...settings,
@@ -170,25 +247,27 @@ export const myInfoSettingsReducer = (settings = initialSettings, action) => {
       return {
         ...settings,
         settingsEmailAddress: action.payload,
-      }
+      };
     case 'myInfoSettings/checkSettingsEmailRegex':
       return {
         ...settings,
         emailRegexError: !action.payload,
-        emailHelperText: !action.payload ? '이메일 형식이 올바르지 않습니다' : '',
+        emailHelperText: !action.payload
+          ? '이메일 형식이 올바르지 않습니다'
+          : '',
       };
     case 'myInfoSettings/isSettingsEmailAvailable':
       return {
         ...settings,
         emailInavailableError: !action.payload,
         emailHelperText: !action.payload ? '이미 존재하는 이메일입니다' : '',
-      }
+      };
     case 'myInfoSettings/isSettingsEmailNew':
       return {
         ...settings,
         emailNotNewError: !action.payload,
         emailHelperText: !action.payload ? '현재 이메일과 동일합니다' : '',
-      }
+      };
     case 'myInfoSettings/checkSettingsUsernameRegex':
       return {
         ...settings,
@@ -200,13 +279,81 @@ export const myInfoSettingsReducer = (settings = initialSettings, action) => {
         ...settings,
         usernameInavailableError: !action.payload,
         usernameHelperText: !action.payload ? '이미 존재하는 닉네임입니다' : '',
-      }
+      };
     case 'myInfoSettings/isSettingsUsernameNew':
       return {
         ...settings,
         usernameNotNewError: !action.payload,
         usernameHelperText: !action.payload ? '현재 닉네임과 동일합니다' : '',
+      };
+    case 'myInfoSettings/cancelSettingsPasswordUpdate':
+      return {
+        ...settings,
+        inputPassword: '',
+        checkPassword: '',
+        passwordError1: false,
+        passwordError2: false,
+        passwordHelperText1: '',
+        passwordHelperText2: '',
       }
+    case 'myInfoSettings/checkSettingsPasswordRegex1':
+      return {
+        ...settings,
+        passwordError1: !action.payload,
+        passwordHelperText1: !action.payload ? '비밀번호 형식이 올바르지 않습니다' : '',
+      }
+    case 'myInfoSettings/checkSettingsPasswordRegexAndMatch':
+      if (
+        isPasswordValid(settings.checkPassword) &&
+        settings.inputPassword === settings.checkPassword
+      )
+        return {
+          ...settings,
+          passwordError2: false,
+          passwordHelperText2: '',
+        };
+      else if (settings.inputPassword !== settings.checkPassword)
+        return {
+          ...settings,
+          passwordError2: true,
+          passwordHelperText2: '비밀번호가 일치하지 않아요',
+        };
+      else if (!isPasswordValid(settings.checkPassword))
+        return {
+          ...settings,
+          passwordError2: true,
+          passwordHelperText2: '비밀번호 형식이 올바르지 않아요',
+        };
+      break;
+      case 'myInputSettings/checkSettingsPasswordMatch':
+        if (settings.inputPassword !== settings.checkPassword)
+          return {
+            ...settings,
+            passwordError2: true,
+            passwordHelperText2: '비밀번호가 일치하지 않아요',
+          };
+        else
+          return {
+            ...settings,
+            passwordError2: false,
+            passwordHelperText2: '',
+          };
+      case 'myInfoSettings/updateSettingsInputPassword':
+        return {
+          ...settings,
+          inputPassword: action.payload,
+        };
+      case 'myInfoSettings/updateSettingsCheckPassword':
+        return {
+          ...settings,
+          checkPassword: action.payload,
+        };
+      case 'myInfoSettings/isSettingsPasswordNew':
+        return {
+          ...settings,
+          passwordError1: !action.payload,
+          passwordHelperText1: !action.payload ? '현재 비밀번호와 동일합니다' : '',
+        }
     default:
       return settings;
   }

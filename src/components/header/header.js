@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
-import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded';
 import ExpandLessRoundedIcon from '@material-ui/icons/ExpandLessRounded';
 import PersonIcon from '@material-ui/icons/Person';
 import FeedbackIcon from '@material-ui/icons/Feedback';

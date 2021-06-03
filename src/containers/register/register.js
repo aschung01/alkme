@@ -265,8 +265,7 @@ const RegisterEmailPage = (props) => {
           }}
           emailAddress={registerPageEmail.userEmailAddress}
           helperText={registerPageEmail.helperText}
-          regexError={registerPageEmail.regexError}
-          inavailableError={registerPageEmail.inavailableError}
+          error={registerPageEmail.regexError || registerPageEmail.inavailableError}
           label="이메일"
         />
       </div>

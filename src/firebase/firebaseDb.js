@@ -1,8 +1,10 @@
 import { db, auth } from './initFirebase';
 import {
   onAuthStateChanged,
-  user,
   updateCurrentUserUsername,
+  updateCurrentUserGender,
+  updateCurrentUserUniversity,
+  updateCurrentUserAge,
 } from './firebaseAuth';
 
 export const registerUserInfo = (uid, userInfo) =>
@@ -14,7 +16,25 @@ export const updateDbUserEmail = (uid, email) => {
 
 export const updateDbUsername = (username) => {
   db.ref('users').child(auth.currentUser.uid).child('username').set(username);
-  updateCurrentUserUsername(username);
+};
+
+export const updateDbUserGender = (gender) => {
+  db.ref('users').child(auth.currentUser.uid).child('gender').set(gender);
+};
+
+export const updateDbUserUniversity = (university) => {
+  db.ref('users')
+    .child(auth.currentUser.uid)
+    .child('university')
+    .set(university);
+};
+
+export const updateDbUserAge = (age) => {
+  db.ref('users').child(auth.currentUser.uid).child('age').set(age);
+};
+
+export const updateDbUserPassword = (uid, password) => {
+  db.ref('users').child(uid).child('password').set(password);
 };
 
 export const getUserInfoFromDb = (user) =>

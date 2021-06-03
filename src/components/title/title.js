@@ -45,8 +45,15 @@ export const SmallTitle = (props) => {
         })}
       </p>
       {titleHelperText ? (
-        <p style={{ fontSize: '10px', fontFamily: 'Noto-Sans' }}>
-          {titleHelperText}
+        <p style={{ fontSize: '13px', color: '#505050', fontFamily: 'Noto-Sans', marginTop: '0px' }}>
+          {titleHelperText.split('\n').map((line) => {
+          return (
+            <span key={line}>
+              {line}
+              <br />
+            </span>
+          );
+        })}
         </p>
       ) : (
         <div style={{ height: '0px' }} />
