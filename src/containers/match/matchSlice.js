@@ -129,52 +129,52 @@ export const inputMatchConditionsReducer = (
   }
 };
 
-export const updateNumPersons = (numPersons) => {
+export const updateInputNumPersons = (numPersons) => {
   return {
-    type: 'matchInfo/updateNumPersons',
+    type: 'inputMatchInfo/updateInputNumPersons',
     payload: numPersons,
   };
 };
 
-export const updateFriendUsername = (friendUsername) => {
+export const updateInputFriendUsername = (friendUsername) => {
   return {
-    type: 'matchInfo/updateFriendUsername',
+    type: 'inputMatchInfo/updateInputFriendUsername',
     payload: friendUsername,
   };
 };
 
-export const updateMatchUniversity = (matchUniversity) => {
+export const updateInputMatchUniversity = (matchUniversity) => {
   return {
-    type: 'matchInfo/updateMatchUniversity',
+    type: 'inputMatchInfo/updateInputMatchUniversity',
     payload: matchUniversity,
   };
 };
 
-export const updateMatchInfoAgeRange = (ageRange) => {
+export const updateInputMatchInfoAgeRange = (ageRange) => {
   return {
-    type: 'matchInfo/updateMatchInfoAgeRange',
+    type: 'inputMatchInfo/updateInputMatchInfoAgeRange',
     payload: ageRange,
   };
 };
 
-const initialMatchInfo = {
+const initialInputMatchInfo = {
   numPersons: 0,
   friendUsername: '',
   matchUniversity: [],
   ageRange: [],
 };
 
-export const matchInfoReducer = (matchInfo = initialMatchInfo, action) => {
+export const inputMatchInfoReducer = (inputMatchInfo = initialInputMatchInfo, action) => {
   switch (action.type) {
-    case 'matchInfo/updateNumPersons':
-      return { ...matchInfo, numPersons: action.payload };
-    case 'matchInfo/updateFriendUsername':
-      return { ...matchInfo, friendUsername: action.payload };
-    case 'matchInfo/updateMatchUniversity':
-      return { ...matchInfo, matchUniversity: action.payload };
-    case 'matchInfo/updateMatchInfoAgeRange':
-      return { ...matchInfo, ageRange: action.payload };
+    case 'inputMatchInfo/updateInputNumPersons':
+      return { ...inputMatchInfo, numPersons: action.payload };
+    case 'inputMatchInfo/updateInputFriendUsername':
+      return { ...inputMatchInfo, friendUsername: action.payload };
+    case 'inputMatchInfo/updateInputMatchUniversity':
+      return { ...inputMatchInfo, matchUniversity: action.payload };
+    case 'inputMatchInfo/updateInputMatchInfoAgeRange':
+      return { ...inputMatchInfo, ageRange: action.payload };
     default:
-      return matchInfo;
+      return inputMatchInfo;
   }
 };

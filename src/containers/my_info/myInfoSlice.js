@@ -40,6 +40,36 @@ export const updateSettingsAge = (age) => {
   };
 };
 
+export const cancelSettingsEmailUpdate = () => {
+  return {
+    type: 'myInfoSettings/cancelEmailUpdate',
+  };
+};
+
+export const cancelSettingsUsernameUpdate = () => {
+  return {
+    type: 'myInfoSettings/cancelUsernameUpdate',
+  };
+};
+
+export const cancelSettingsGenderUpdate = () => {
+  return {
+    type: 'myInfoSettings/cancelGenderUpdate',
+  };
+};
+
+export const cancelSettingsUniversityUpdate = () => {
+  return {
+    type: 'myInfoSettings/cancelUniversityUpdate',
+  };
+};
+
+export const cancelSettingsAgeUpdate = () => {
+  return {
+    type: 'myInfoSettings/cancelAgeUpdate',
+  };
+};
+
 export const updateSettingsEmailId = (emailId) => {
   return {
     type: 'myInfoSettings/updateSettingsEmailId',
@@ -101,8 +131,8 @@ export const isSettingsUsernameNew = (isNew) => {
 export const cancelSettingsPasswordUpdate = () => {
   return {
     type: 'myInfoSettings/cancelSettingsPasswordUpdate',
-  }
-}
+  };
+};
 
 export const checkSettingsPasswordRegex1 = (password) => {
   const passwordValid = isPasswordValid(password);
@@ -142,8 +172,8 @@ export const isSettingsPasswordNew = (isNew) => {
   return {
     type: 'myInfoSettings/isSettingsPasswordNew',
     payload: isNew,
-  }
-}
+  };
+};
 
 const isPasswordValid = (password) => {
   // Password requirements are as follows:
@@ -238,6 +268,56 @@ export const myInfoSettingsReducer = (settings = initialSettings, action) => {
           age: action.payload,
         },
       };
+    case 'myInfoSettings/cancelSettingsEmailUpdate':
+      return {
+        ...settings,
+        settingsEamilId: '',
+        settingsEmailAddress: '',
+        emailRegexError: false,
+        emailInavailableError: false,
+        emailNotNewError: false,
+        emailHelperText: '',
+        personalInfo: {
+          ...settings.personalInfo,
+          email: '',
+        },
+      };
+    case 'myInfoSettings/cancelSettingsUsernameUpdate':
+      return {
+        ...settings,
+        settingsUsername: '',
+        usernameRegexError: false,
+        usernameInavailableError: false,
+        usernameHelperText: '',
+        personalInfo: {
+          ...settings.personalInfo,
+          username: '',
+        },
+      };
+    case 'myInfoSettings/cancelSettingsGenderUpdate':
+      return {
+        ...settings,
+        personalInfo: {
+          ...settings.personalInfo,
+          gender: '',
+        },
+      };
+    case 'myInfoSettings/cancelUniversityUpdate':
+      return {
+        ...settings,
+        personalInfo: {
+          ...settings.personalInfo,
+          university: '',
+        },
+      };
+    case 'myInfoSettings/cancelSettingsAgeUpdate':
+      return {
+        ...settings,
+        personalInfo: {
+          ...settings.personalInfo,
+          age: 0,
+        },
+      };
     case 'myInfoSettings/updateSettingsEmailId':
       return {
         ...settings,
@@ -295,13 +375,15 @@ export const myInfoSettingsReducer = (settings = initialSettings, action) => {
         passwordError2: false,
         passwordHelperText1: '',
         passwordHelperText2: '',
-      }
+      };
     case 'myInfoSettings/checkSettingsPasswordRegex1':
       return {
         ...settings,
         passwordError1: !action.payload,
-        passwordHelperText1: !action.payload ? '비밀번호 형식이 올바르지 않습니다' : '',
-      }
+        passwordHelperText1: !action.payload
+          ? '비밀번호 형식이 올바르지 않습니다'
+          : '',
+      };
     case 'myInfoSettings/checkSettingsPasswordRegexAndMatch':
       if (
         isPasswordValid(settings.checkPassword) &&
@@ -325,35 +407,37 @@ export const myInfoSettingsReducer = (settings = initialSettings, action) => {
           passwordHelperText2: '비밀번호 형식이 올바르지 않아요',
         };
       break;
-      case 'myInputSettings/checkSettingsPasswordMatch':
-        if (settings.inputPassword !== settings.checkPassword)
-          return {
-            ...settings,
-            passwordError2: true,
-            passwordHelperText2: '비밀번호가 일치하지 않아요',
-          };
-        else
-          return {
-            ...settings,
-            passwordError2: false,
-            passwordHelperText2: '',
-          };
-      case 'myInfoSettings/updateSettingsInputPassword':
+    case 'myInputSettings/checkSettingsPasswordMatch':
+      if (settings.inputPassword !== settings.checkPassword)
         return {
           ...settings,
-          inputPassword: action.payload,
+          passwordError2: true,
+          passwordHelperText2: '비밀번호가 일치하지 않아요',
         };
-      case 'myInfoSettings/updateSettingsCheckPassword':
+      else
         return {
           ...settings,
-          checkPassword: action.payload,
+          passwordError2: false,
+          passwordHelperText2: '',
         };
-      case 'myInfoSettings/isSettingsPasswordNew':
-        return {
-          ...settings,
-          passwordError1: !action.payload,
-          passwordHelperText1: !action.payload ? '현재 비밀번호와 동일합니다' : '',
-        }
+    case 'myInfoSettings/updateSettingsInputPassword':
+      return {
+        ...settings,
+        inputPassword: action.payload,
+      };
+    case 'myInfoSettings/updateSettingsCheckPassword':
+      return {
+        ...settings,
+        checkPassword: action.payload,
+      };
+    case 'myInfoSettings/isSettingsPasswordNew':
+      return {
+        ...settings,
+        passwordError1: !action.payload,
+        passwordHelperText1: !action.payload
+          ? '현재 비밀번호와 동일합니다'
+          : '',
+      };
     default:
       return settings;
   }
@@ -363,6 +447,13 @@ export const jumpPersonalInfoPage = (int) => {
   return {
     type: 'myInfoPageState/jumpPersonalInfoPage',
     payload: int,
+  };
+};
+
+export const toggleMatchHistoryPage = (match) => {
+  return {
+    type: 'myInfoPageState/toggleMatchHistoryPage',
+    payload: match,
   };
 };
 
@@ -413,6 +504,18 @@ export const updateInputEmail = (email) => {
   };
 };
 
+export const cancelReauthentication = () => {
+  return {
+    type: 'myInfoPageState/cancelReauthentication',
+  };
+};
+
+export const resetMyInfoPageState = () => {
+  return {
+    type: 'myInfoPageState/resetMyInfoPageState',
+  }
+}
+
 const isPasswordRegexValid = (password) => {
   // Password requirements are as follows:
   // 8 ~ 64 characters
@@ -426,9 +529,11 @@ const isPasswordRegexValid = (password) => {
 
 const initialPageState = {
   personalInfoPage: 1,
-  showPreviousMatch: false,
-  showCurrentMatch: false,
-  showWaitingMatch: false,
+  matchHistoryPage: {
+    previousMatch: false,
+    presentMatch: false,
+    waitingMatch: false,
+  },
   inputPassword: '',
   passwordRegexError: false,
   passwordMatchError: false,
@@ -442,6 +547,35 @@ export const myInfoPageReducer = (state = initialPageState, action) => {
         ...state,
         personalInfoPage: action.payload,
       };
+    case 'myInfoPageState/toggleMatchHistoryPage':
+      switch (action.payload) {
+        case 'previousMatch':
+          return {
+            ...state,
+            matchHistoryPage: {
+              ...state.matchHistoryPage,
+              previousMatch: !state.matchHistoryPage.previousMatch,
+            },
+          };
+        case 'presentMatch':
+          return {
+            ...state,
+            matchHistoryPage: {
+              ...state.matchHistoryPage,
+              presentMatch: !state.matchHistoryPage.presentMatch,
+            },
+          };
+        case 'waitingMatch':
+          return {
+            ...state,
+            matchHistoryPage: {
+              ...state.matchHistoryPage,
+              waitingMatch: !state.matchHistoryPage.waitingMatch,
+            },
+          };
+        default:
+          return state;
+      }
     case 'myInfoPageState/toggleShowPreviousMatch':
       return {
         ...state,
@@ -478,6 +612,16 @@ export const myInfoPageReducer = (state = initialPageState, action) => {
           ? '비밀번호가 올바르지 않습니다'
           : '',
       };
+    case 'myInfoPageState/cancelReauthentication':
+      return {
+        ...state,
+        inputPassword: '',
+        passwordMatchError: false,
+        passwordRegexError: false,
+        passwordHelperText: '',
+      };
+    case 'myInfoPageState/resetMyInfoPageState':
+      return initialPageState;
     default:
       return state;
   }

@@ -149,6 +149,7 @@ export const RegisterOrLoginButton = (props) => {
 
 export const TextButton = (props) => {
   const { color, onClick, buttonText } = props;
+
   const classes = textButtonStyles();
   return typeof onClick === undefined ? (
     <Button className={classes.root}>

@@ -1,9 +1,6 @@
 import React from 'react';
 import { Header } from '../../components/header/header';
-import {
-  SelectUniversityButton,
-  TextButton,
-} from '../../components/buttons/buttons';
+import { TextButton } from '../../components/buttons/buttons';
 import { InputSelect } from '../../components/input_select/input_select';
 import {
   EmailInputField,
@@ -18,9 +15,7 @@ import {
   updateInputPassword,
   isUserReauthenticated,
   jumpPersonalInfoPage,
-  toggleShowCurrentMatch,
-  toggleShowPreviousMatch,
-  toggleShowWaitingMatch,
+  cancelReauthentication,
   updateSettingsEmail,
   updateSettingsEmailId,
   updateSettingsEmailAddress,
@@ -42,6 +37,12 @@ import {
   checkSettingsPasswordMatch,
   isSettingsPasswordNew,
   cancelSettingsPasswordUpdate,
+  cancelSettingsEmailUpdate,
+  cancelSettingsUsernameUpdate,
+  cancelSettingsGenderUpdate,
+  cancelSettingsUniversityUpdate,
+  cancelSettingsAgeUpdate,
+  toggleMatchHistoryPage,
 } from './myInfoSlice';
 import {
   reauthenticateUser,
@@ -63,7 +64,7 @@ import {
 import { InputSlider } from '../../components/sliders/sliders';
 
 export const MyInfo = (props) => {
-  const { currentUserInfo, myInfoPage, myInfoSettings, dispatch } = props;
+  const { myInfoPage, myInfoSettings, currentUserInfo, dispatch } = props;
 
   return (
     <div className="MyInfo">
@@ -72,13 +73,21 @@ export const MyInfo = (props) => {
       <span className="MyInfoDot3" />
       <span className="MyInfoDot4" />
       <div className="MyInfoView">
-        <Header
-          backRoute="/home"
-          titleText="내 정보"
-          onClick={() => dispatch(jumpPersonalInfoPage(1))}
-        />
+        <div className="MyInfoHeader">
+          <Header
+            backRoute="/home"
+            titleText="내 정보"
+            onClick={() => dispatch(jumpPersonalInfoPage(1))}
+          />
+        </div>
         <div className="MyInfoBoxes">
-          {PersonalInfoBox(props)}
+          <PersonalInfoBox
+            myInfoPage={myInfoPage}
+            myInfoSettings={myInfoSettings}
+            currentUserInfo={currentUserInfo}
+            dispatch={dispatch}
+          />
+          <MatchHistoryBox myInfoPage={myInfoPage} dispatch={dispatch} />
           <div className="MatchHistoryBox">
             <p className="BoxTitleElement">미팅 정보</p>
             <div className="BoxElementWithButton">
@@ -103,30 +112,76 @@ export const MyInfo = (props) => {
   );
 };
 
+// Personal Info Box code below
+
 const PersonalInfoBox = (props) => {
-  const { myInfoPage } = props;
+  const { myInfoPage, myInfoSettings, currentUserInfo, dispatch } = props;
 
   switch (myInfoPage.personalInfoPage) {
     case 1:
-      return DisplayPersonalInfoBox(props);
+      return (
+        <DisplayPersonalInfoBox
+          currentUserInfo={currentUserInfo}
+          dispatch={dispatch}
+        />
+      );
     case 2:
-      return ReauthenticateUserBox(props);
+      return (
+        <ReauthenticateUserBox myInfoPage={myInfoPage} dispatch={dispatch} />
+      );
     case 3:
-      return ChangePersonalInfoBox(props);
+      return (
+        <ChangePersonalInfoBox
+          currentUserInfo={currentUserInfo}
+          dispatch={dispatch}
+        />
+      );
     case 4:
-      return ChangeEmailBox(props);
+      return (
+        <ChangeEmailBox
+          myInfoSettings={myInfoSettings}
+          currentUserInfo={currentUserInfo}
+          dispatch={dispatch}
+        />
+      );
     case 5:
-      return ChangeUsernameBox(props);
+      return (
+        <ChangeUsernameBox
+          myInfoSettings={myInfoSettings}
+          currentUserInfo={currentUserInfo}
+          dispatch={dispatch}
+        />
+      );
     case 6:
-      return ChangeGenderBox(props);
+      return (
+        <ChangeGenderBox myInfoSettings={myInfoSettings} dispatch={dispatch} />
+      );
     case 7:
-      return ChangeUniversityBox(props);
+      return (
+        <ChangeUniversityBox
+          myInfoSettings={myInfoSettings}
+          dispatch={dispatch}
+        />
+      );
     case 8:
-      return ChangeAgeBox(props);
+      return (
+        <ChangeAgeBox myInfoSettings={myInfoSettings} dispatch={dispatch} />
+      );
     case 9:
-      return ChangePasswordBox(props);
+      return (
+        <ChangePasswordBox
+          myInfoSettings={myInfoSettings}
+          currentUserInfo={currentUserInfo}
+          dispatch={dispatch}
+        />
+      );
     default:
-      return ReauthenticateUserBox(props);
+      return (
+        <DisplayPersonalInfoBox
+          currentUserInfo={currentUserInfo}
+          dispatch={dispatch}
+        />
+      );
   }
 };
 
@@ -163,6 +218,7 @@ const ReauthenticateUserBox = (props) => {
           color="#EF515F"
           onClick={(e) => {
             dispatch(jumpPersonalInfoPage(1));
+            dispatch(cancelReauthentication());
           }}
         />
         <TextButton
@@ -172,9 +228,10 @@ const ReauthenticateUserBox = (props) => {
             const validPassword = await reauthenticateUser(
               myInfoPage.inputPassword
             );
-            dispatch(isUserReauthenticated(validPassword));
             if (validPassword) {
               dispatch(jumpPersonalInfoPage(3));
+            } else {
+              dispatch(isUserReauthenticated(validPassword));
             }
           }}
         />
@@ -308,6 +365,7 @@ const ChangeEmailBox = (props) => {
           color="#EF515F"
           onClick={() => {
             dispatch(jumpPersonalInfoPage(3));
+            dispatch(cancelSettingsEmailUpdate());
           }}
         />
         <TextButton
@@ -361,6 +419,7 @@ const ChangeUsernameBox = (props) => {
           color="#EF515F"
           onClick={() => {
             dispatch(jumpPersonalInfoPage(3));
+            dispatch(cancelSettingsUsernameUpdate());
           }}
         />
         <TextButton
@@ -392,7 +451,7 @@ const ChangeUsernameBox = (props) => {
 };
 
 const ChangeGenderBox = (props) => {
-  const { currentUserInfo, myInfoSettings, dispatch } = props;
+  const { myInfoSettings, dispatch } = props;
   return (
     <div className="PersonalInfoBox">
       <p className="BoxTitleElement">개인정보 {'>'} 성별</p>
@@ -413,6 +472,7 @@ const ChangeGenderBox = (props) => {
           color="#EF515F"
           onClick={() => {
             dispatch(jumpPersonalInfoPage(3));
+            dispatch(cancelSettingsGenderUpdate());
           }}
         />
         <TextButton
@@ -432,7 +492,7 @@ const ChangeGenderBox = (props) => {
 };
 
 const ChangeUniversityBox = (props) => {
-  const { currentUserInfo, myInfoSettings, dispatch } = props;
+  const { myInfoSettings, dispatch } = props;
   return (
     <div className="PersonalInfoBox">
       <p className="BoxTitleElement">개인정보 {'>'} 대학</p>
@@ -455,6 +515,7 @@ const ChangeUniversityBox = (props) => {
           color="#EF515F"
           onClick={() => {
             dispatch(jumpPersonalInfoPage(3));
+            dispatch(cancelSettingsUniversityUpdate());
           }}
         />
         <TextButton
@@ -498,6 +559,7 @@ const ChangeAgeBox = (props) => {
           color="#EF515F"
           onClick={() => {
             dispatch(jumpPersonalInfoPage(3));
+            dispatch(cancelSettingsAgeUpdate());
           }}
         />
         <TextButton
@@ -579,4 +641,237 @@ const ChangePasswordBox = (props) => {
       </div>
     </div>
   );
+};
+
+// Match History Box code below
+
+const MatchHistoryBox = (props) => {
+  const { myInfoPage, dispatch } = props;
+
+  return (
+    <div className="MatchHistoryBox">
+      <p className="BoxTitleElement">미팅 정보</p>
+      <DisplayPreviousMatch myInfoPage={myInfoPage} dispatch={dispatch} />
+      <DisplayPresentMatch myInfoPage={myInfoPage} dispatch={dispatch} />
+      <DisplayWaitingMatch myInfoPage={myInfoPage} dispatch={dispatch} />
+    </div>
+  );
+};
+
+const getMatchDateBoxStyles = (type) => {
+  switch (type) {
+    case 'previous':
+      return {
+        width: '90%',
+        margin: '5px',
+        padding: '10px',
+        border: '1px solid #EF515F',
+        borderRadius: '7px',
+        alignSelf: 'center',
+      };
+    case 'present':
+      return {
+        width: '90%',
+        margin: '5px',
+        padding: '10px',
+        background: 'linear-gradient(to left top, #EF515F, #FBD0CA)',
+        borderRadius: '7px',
+        alignSelf: 'center',
+      };
+    case 'waiting':
+      return {
+        width: '90%',
+        margin: '5px',
+        padding: '10px',
+        border: '1px solid #EF515F',
+        borderRadius: '7px',
+        alignSelf: 'center',
+        display: 'flex',
+        justifyContent: 'space-between',
+      };
+  }
+};
+
+const DisplayMatchDateBox = (props) => {
+  const { type, dates, matchId, dispatch } = props;
+
+  if (type === 'waiting')
+    return matchId.map((id, index) => (
+      <div key={index} style={getMatchDateBoxStyles(type)}>
+        <p style={{ margin: '5px 10px' }}>매칭까지 남은 시간: <br /> 약 13 : 38 : 05</p>
+        <TextButton
+          buttonText="수정하기"
+          color="#EF515F"
+          onClick={(e) => {
+            //todo(sounho): implement onClick function
+          }}
+        />
+      </div>
+    ));
+  else
+    return dates.map((date, index) => (
+      <div key={index} style={getMatchDateBoxStyles(type)}>
+        <p style={{ margin: '5px 10px' }}>{date}</p>
+      </div>
+    ));
+};
+
+const DisplayPreviousMatch = (props) => {
+  const { myInfoPage, dispatch } = props;
+
+  if (!myInfoPage.matchHistoryPage.previousMatch)
+    return (
+      <div className="BoxElementWithButton">
+        <p className="BoxElement">성사된 미팅</p>
+        <TextButton
+          buttonText="자세히"
+          color="#EF515F"
+          onClick={(e) => {
+            dispatch(toggleMatchHistoryPage('previousMatch'));
+          }}
+        />
+      </div>
+    );
+  else
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          flexDirection: 'column',
+          width: '100%',
+        }}
+      >
+        <div className="BoxElementWithButton">
+          <p className="BoxElement">성사된 미팅</p>
+          <TextButton
+            buttonText="간단히"
+            color="#EF515F"
+            onClick={(e) => {
+              dispatch(toggleMatchHistoryPage('previousMatch'));
+            }}
+          />
+        </div>
+        <div
+          style={{
+            margin: '5px 0',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+          }}
+        >
+          <DisplayMatchDateBox
+            type="previous"
+            dates={['2021. 06. 11 금요일', '2021. 06. 19 토요일']}
+          />
+        </div>
+      </div>
+    );
+};
+
+const DisplayPresentMatch = (props) => {
+  const { myInfoPage, dispatch } = props;
+
+  if (!myInfoPage.matchHistoryPage.presentMatch)
+    return (
+      <div className="BoxElementWithButton">
+        <p className="BoxElement">매칭된 미팅</p>
+        <TextButton
+          buttonText="자세히"
+          color="#EF515F"
+          onClick={(e) => {
+            dispatch(toggleMatchHistoryPage('presentMatch'));
+          }}
+        />
+      </div>
+    );
+  else
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          flexDirection: 'column',
+          width: '100%',
+        }}
+      >
+        <div className="BoxElementWithButton">
+          <p className="BoxElement">매칭된 미팅</p>
+          <TextButton
+            buttonText="간단히"
+            color="#EF515F"
+            onClick={(e) => {
+              dispatch(toggleMatchHistoryPage('presentMatch'));
+            }}
+          />
+        </div>
+        <div
+          style={{
+            margin: '5px 0',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+          }}
+        >
+          <DisplayMatchDateBox
+            type="present"
+            dates={['2021. 07. 04 일요일', '2021. 07. 10 토요일']}
+          />
+        </div>
+      </div>
+    );
+};
+
+const DisplayWaitingMatch = (props) => {
+  const { myInfoPage, dispatch } = props;
+
+  if (!myInfoPage.matchHistoryPage.waitingMatch)
+    return (
+      <div className="BoxElementWithButton">
+        <p className="BoxElement">매칭 대기중인 미팅</p>
+        <TextButton
+          buttonText="자세히"
+          color="#EF515F"
+          onClick={(e) => {
+            dispatch(toggleMatchHistoryPage('waitingMatch'));
+          }}
+        />
+      </div>
+    );
+  else
+    return (
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          flexDirection: 'column',
+          width: '100%',
+        }}
+      >
+        <div className="BoxElementWithButton">
+          <p className="BoxElement">매칭 대기중인 미팅</p>
+          <TextButton
+            buttonText="간단히"
+            color="#EF515F"
+            onClick={(e) => {
+              dispatch(toggleMatchHistoryPage('waitingMatch'));
+            }}
+          />
+        </div>
+        <div
+          style={{
+            margin: '5px 0',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+          }}
+        >
+          <DisplayMatchDateBox
+            type="waiting"
+            matchId={['2021. 07. 04 일요일']}
+            dispatch={dispatch}
+          />
+        </div>
+      </div>
+    );
 };

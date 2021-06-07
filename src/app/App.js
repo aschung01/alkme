@@ -54,12 +54,12 @@ export const App = (props) => {
               matchPage={state.matchPage}
               matchPageFriendUsername={state.matchPageFriendUsername}
               matchConditions={state.matchConditions}
-              matchInfo={state.matchInfo}
+              inputMatchInfo={state.inputMatchInfo}
               dispatch={dispatch}
             />
           </PrivateRoute>
           <PrivateRoute path="/home" currentUserInfo={state.currentUserInfo}>
-            <Home currentUserInfo={state.currentUserInfo} />
+            <Home currentUserInfo={state.currentUserInfo} dispatch={dispatch}/>
           </PrivateRoute>
           <Route path="/register">
             <Register

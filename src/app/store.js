@@ -11,7 +11,7 @@ import {
   matchPageReducer,
   matchPageFriendUsernameReducer,
   inputMatchConditionsReducer,
-  matchInfoReducer,
+  inputMatchInfoReducer,
 } from '../containers/match/matchSlice.js';
 import {
   myInfoPageReducer,
@@ -33,6 +33,6 @@ export const store = createStore(
     matchPage: matchPageReducer,
     matchPageFriendUsername: matchPageFriendUsernameReducer,
     matchConditions: inputMatchConditionsReducer,
-    matchInfo: matchInfoReducer,
+    inputMatchInfo: inputMatchInfoReducer,
   })
 );

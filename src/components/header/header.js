@@ -8,6 +8,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import FeedbackIcon from '@material-ui/icons/Feedback';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import './header.css';
+import { resetMyInfoPageState } from '../../containers/my_info/myInfoSlice';
 
 export const Header = (props) => {
   const { onClick, titleText, backRoute } = props;
@@ -58,7 +59,7 @@ export const Header = (props) => {
 };
 
 export const HomeHeader = (props) => {
-  const { titleText, feedbackClick, logoutClick } = props;
+  const { titleText, feedbackClick, logoutClick, dispatch } = props;
   const [expand, setExpand] = React.useState(false);
   const history = useHistory();
 
@@ -78,7 +79,12 @@ export const HomeHeader = (props) => {
       </div>
       <div className="NavigationSection">
         <div className="MyInfoButton">
-          <IconButton onClick={(e) => history.push('/myInfo')}>
+          <IconButton
+            onClick={(e) => {
+              dispatch(resetMyInfoPageState());
+              history.push('/myInfo');
+            }}
+          >
             <PersonIcon
               style={{ padding: '7px', fontSize: '60px', color: 'black' }}
             />
