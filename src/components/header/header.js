@@ -1,5 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { useScroll } from '../../hooks/useScroll';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
@@ -11,11 +12,18 @@ import './header.css';
 import { resetMyInfoPageState } from '../../containers/my_info/myInfoSlice';
 
 export const Header = (props) => {
-  const { onClick, titleText, backRoute } = props;
+  const { onClick, titleText, backRoute, scrollHeight } = props;
   const history = useHistory();
+  const { Y } = useScroll();
 
   return (
-    <div className="Header">
+    <div
+      className={
+        scrollHeight <= (8 * window.innerHeight) / 100
+          ? 'InitialHeader'
+          : 'OnScrollHeader'
+      }
+    >
       <div className="HeaderBackButton">
         {backRoute !== '' ? (
           <IconButton
@@ -109,6 +117,57 @@ export const HomeHeader = (props) => {
           </IconButton>
           <span style={{ fontSize: '15px', margin: 'auto' }}>로그아웃</span>
         </div>
+      </div>
+      <IconButton onClick={handleClick} className="ExpandButton">
+        <ExpandLessRoundedIcon
+          style={{ padding: '7px', fontSize: '40px', color: 'black' }}
+        />
+      </IconButton>
+    </div>
+  ) : (
+    <div className="ShrunkHomeHeader">
+      <div
+        className="HomeTitle"
+        style={{ height: '10vh', display: 'flex', alignContent: 'center' }}
+      >
+        <span style={{ fontSize: '20px', fontWeight: 'bold', margin: 'auto' }}>
+          {titleText}
+        </span>
+      </div>
+      <IconButton onClick={handleClick} className="ExpandButton">
+        <MenuRoundedIcon
+          style={{ padding: '7px', fontSize: '35px', color: 'black' }}
+        />
+      </IconButton>
+    </div>
+  );
+};
+
+export const AdminHomeHeader = (props) => {
+  const { titleText, logoutClick } = props;
+  const [expand, setExpand] = React.useState(false);
+
+  const handleClick = (e) => {
+    setExpand(!expand);
+  };
+
+  return expand ? (
+    <div className="ExpandedHomeHeader">
+      <div
+        className="HomeTitle"
+        style={{ height: '10vh', display: 'flex', alignContent: 'center' }}
+      >
+        <span style={{ fontSize: '20px', fontWeight: 'bold', margin: 'auto' }}>
+          {titleText}
+        </span>
+      </div>
+      <div className="LogoutButton">
+        <IconButton onClick={logoutClick}>
+          <ExitToAppIcon
+            style={{ padding: '7px', fontSize: '60px', color: 'black' }}
+          />
+        </IconButton>
+        <span style={{ fontSize: '15px', margin: 'auto' }}>로그아웃</span>
       </div>
       <IconButton onClick={handleClick} className="ExpandButton">
         <ExpandLessRoundedIcon

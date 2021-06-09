@@ -31,16 +31,13 @@ export const Home = (props) => {
         </div>
         <div className="Routes">
           <Link to="/terms_of_use" className="AboutServiceButton">
-            <RouteButton background="#FBD0CAE5" buttonText="서비스 이용방법" />
+            <RouteButton buttonText="서비스 이용방법" />
           </Link>
           <Link to="/match" className="MatchStartButton">
-            <RouteButton background="#f4838aE5" buttonText="미팅 신청하기" />
+            <RouteButton buttonText="미팅 신청하기" />
           </Link>
           <Link to="/match_results" className="MatchResultsButton">
-            <RouteButton
-              background="#ef515fE5"
-              buttonText="매칭 결과 확인하기"
-            />
+            <RouteButton buttonText="매칭 결과 확인하기" />
           </Link>
         </div>
       </div>

@@ -62,9 +62,11 @@ import {
   updateDbUserUniversity,
 } from '../../firebase/firebaseDb';
 import { InputSlider } from '../../components/sliders/sliders';
+import { useScroll } from '../../hooks/useScroll'
 
 export const MyInfo = (props) => {
   const { myInfoPage, myInfoSettings, currentUserInfo, dispatch } = props;
+  const { scrollY } = useScroll();
 
   return (
     <div className="MyInfo">
@@ -75,6 +77,7 @@ export const MyInfo = (props) => {
       <div className="MyInfoView">
         <div className="MyInfoHeader">
           <Header
+            scrollHeight={scrollY}
             backRoute="/home"
             titleText="내 정보"
             onClick={() => dispatch(jumpPersonalInfoPage(1))}
@@ -88,21 +91,6 @@ export const MyInfo = (props) => {
             dispatch={dispatch}
           />
           <MatchHistoryBox myInfoPage={myInfoPage} dispatch={dispatch} />
-          <div className="MatchHistoryBox">
-            <p className="BoxTitleElement">미팅 정보</p>
-            <div className="BoxElementWithButton">
-              <p className="BoxElement">성사된 미팅</p>
-              <TextButton buttonText="자세히" color="#EF515F" />
-            </div>
-            <div className="BoxElementWithButton">
-              <p className="BoxElement">매칭된 미팅</p>
-              <TextButton buttonText="자세히" color="#EF515F" />
-            </div>
-            <div className="BoxElementWithButton">
-              <p className="BoxElement">매칭 대기중인 미팅</p>
-              <TextButton buttonText="자세히" color="#EF515F" />
-            </div>
-          </div>
           <div className="MyLevelBox">
             <p className="BoxTitleElement">내 등급</p>
           </div>
@@ -689,6 +677,15 @@ const getMatchDateBoxStyles = (type) => {
         display: 'flex',
         justifyContent: 'space-between',
       };
+    default:
+      return {
+        width: '90%',
+        margin: '5px',
+        padding: '10px',
+        border: '1px solid #EF515F',
+        borderRadius: '7px',
+        alignSelf: 'center',
+      };
   }
 };
 
@@ -698,7 +695,9 @@ const DisplayMatchDateBox = (props) => {
   if (type === 'waiting')
     return matchId.map((id, index) => (
       <div key={index} style={getMatchDateBoxStyles(type)}>
-        <p style={{ margin: '5px 10px' }}>매칭까지 남은 시간: <br /> 약 13 : 38 : 05</p>
+        <p style={{ margin: '5px 10px' }}>
+          매칭까지 남은 시간: <br /> 약 13 : 38 : 05
+        </p>
         <TextButton
           buttonText="수정하기"
           color="#EF515F"

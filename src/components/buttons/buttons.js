@@ -41,7 +41,7 @@ const routeButtonStyles = makeStyles({
     borderRadius: 10,
     color: 'black',
     height: '12vh',
-    width: '80vw',
+    width: (props) => props.width !== undefined ? props.width : '80vw',
   },
   child: {
     backgroundColor: (props) => props.background,
@@ -254,7 +254,6 @@ export const SelectUniversityButton = (props) => {
 };
 
 RouteButton.propTypes = {
-  background: PropTypes.string.isRequired,
   buttonText: PropTypes.string.isRequired,
 };
 
