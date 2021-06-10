@@ -6,7 +6,7 @@ import './admin_home.css';
 import { logout } from '../../firebase/firebaseAuth';
 
 export const AdminHome = (props) => {
-  const { currentUserInfo, dispatch } = props;
+  const { currentUserInfo } = props;
   const homeTitleText = `${currentUserInfo.userInfo.username}님[관리자] 환영합니다!`;
 
   const logoutClick = (e) => {

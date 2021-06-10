@@ -148,7 +148,7 @@ export const RegisterOrLoginButton = (props) => {
 };
 
 export const TextButton = (props) => {
-  const { color, onClick, buttonText } = props;
+  const { color, onClick, buttonText, disabled } = props;
 
   const classes = textButtonStyles();
   return typeof onClick === undefined ? (
@@ -164,10 +164,10 @@ export const TextButton = (props) => {
       </span>
     </Button>
   ) : (
-    <Button className={classes.root} onClick={onClick}>
+    <Button disabled={disabled === undefined ? false : disabled} className={classes.root} onClick={onClick}>
       <span
         style={{
-          color: color,
+          color: disabled === undefined ? color : (disabled ? '#808080' : color),
           fontSize: '15px',
           fontFamily: 'Noto-Sans',
         }}

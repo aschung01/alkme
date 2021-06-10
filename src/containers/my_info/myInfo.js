@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Header } from '../../components/header/header';
 import { TextButton } from '../../components/buttons/buttons';
 import { InputSelect } from '../../components/input_select/input_select';
@@ -62,11 +62,17 @@ import {
   updateDbUserUniversity,
 } from '../../firebase/firebaseDb';
 import { InputSlider } from '../../components/sliders/sliders';
-import { useScroll } from '../../hooks/useScroll'
 
 export const MyInfo = (props) => {
   const { myInfoPage, myInfoSettings, currentUserInfo, dispatch } = props;
-  const { scrollY } = useScroll();
+  const [headerTransparent, setHeaderTransparent] = useState(true);
+  const myInfoBoxes = useRef();
+
+  const changeHeaderBackground = () => {
+    if (myInfoBoxes.current.scrollTop > (8 * window.innerHeight) / 100)
+      setHeaderTransparent(false);
+    else setHeaderTransparent(true);
+  };
 
   return (
     <div className="MyInfo">
@@ -74,26 +80,28 @@ export const MyInfo = (props) => {
       <span className="MyInfoDot2" />
       <span className="MyInfoDot3" />
       <span className="MyInfoDot4" />
-      <div className="MyInfoView">
-        <div className="MyInfoHeader">
-          <Header
-            scrollHeight={scrollY}
-            backRoute="/home"
-            titleText="내 정보"
-            onClick={() => dispatch(jumpPersonalInfoPage(1))}
-          />
-        </div>
-        <div className="MyInfoBoxes">
-          <PersonalInfoBox
-            myInfoPage={myInfoPage}
-            myInfoSettings={myInfoSettings}
-            currentUserInfo={currentUserInfo}
-            dispatch={dispatch}
-          />
-          <MatchHistoryBox myInfoPage={myInfoPage} dispatch={dispatch} />
-          <div className="MyLevelBox">
-            <p className="BoxTitleElement">내 등급</p>
-          </div>
+      <div className="MyInfoHeader">
+        <Header
+          transparent={headerTransparent}
+          backRoute="/home"
+          titleText="내 정보"
+          onClick={() => dispatch(jumpPersonalInfoPage(1))}
+        />
+      </div>
+      <div
+        ref={myInfoBoxes}
+        className="MyInfoBoxes"
+        onScroll={changeHeaderBackground}
+      >
+        <PersonalInfoBox
+          myInfoPage={myInfoPage}
+          myInfoSettings={myInfoSettings}
+          currentUserInfo={currentUserInfo}
+          dispatch={dispatch}
+        />
+        <MatchHistoryBox myInfoPage={myInfoPage} dispatch={dispatch} />
+        <div className="MyLevelBox">
+          <p className="BoxTitleElement">내 등급</p>
         </div>
       </div>
     </div>

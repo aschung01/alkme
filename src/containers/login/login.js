@@ -25,7 +25,7 @@ export const Login = (props) => {
   return (
     <div className="Login">
       <div className="LoginContainer">
-        <Header backRoute="/" />
+        <Header backRoute="/" transparent={true}/>
         <Title titleText={loginTitleText} />
         <div className="InputLoginInfo">
           <div className="InputLoginEmail">

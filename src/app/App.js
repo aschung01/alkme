@@ -6,11 +6,12 @@ import {
   Redirect,
 } from 'react-router-dom';
 import { AdminHome } from '../containers/admin_home/admin_home';
-import { DisplayUsersInfo } from '../containers/display_users_info/display_users_info'
-import { DisplayFeedback } from '../containers/display_feedback/display_feedback'
-import { DisplayCurrentMeetings } from '../containers/display_current_meetings/display_current_meetings'
-import { DisplayPreviousMeetings } from '../containers/display_previous_meetings/display_previous_meetings'
-import { DisplayWaitingMeetings } from '../containers/display_waiting_meetings/display_waiting_meetings'
+import { DisplayUsersInfo } from '../containers/display_users_info/display_users_info';
+import { DisplayFeedback } from '../containers/display_feedback/display_feedback';
+import { DisplayCurrentMeetings } from '../containers/display_current_meetings/display_current_meetings';
+import { DisplayPreviousMeetings } from '../containers/display_previous_meetings/display_previous_meetings';
+import { DisplayWaitingMeetings } from '../containers/display_waiting_meetings/display_waiting_meetings';
+import { Feedback } from '../containers/feedback/feedback';
 import { Landing } from '../containers/landing/landing.js';
 import { Register } from '../containers/register/register.js';
 import { Home } from '../containers/home/home.js';
@@ -47,6 +48,12 @@ export const App = (props) => {
     <div className="App">
       <Router>
         <Switch>
+          <PrivateRoute
+            path="/feedback"
+            currentUserInfo={state.currentUserInfo}
+          >
+            <Feedback dispatch={dispatch} feedbackPage={state.feedbackPage} />
+          </PrivateRoute>
           <PrivateRoute path="/myInfo" currentUserInfo={state.currentUserInfo}>
             <MyInfo
               currentUserInfo={state.currentUserInfo}

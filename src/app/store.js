@@ -18,6 +18,7 @@ import {
   myInfoSettingsReducer
 } from '../containers/my_info/myInfoSlice'
 import { currentUserInfoReducer } from '../firebase/firebaseAuth';
+import { feedbackPageReducer } from '../containers/feedback/feedbackSlice';
 
 export const store = createStore(
   combineReducers({
@@ -30,6 +31,7 @@ export const store = createStore(
     loginPage: loginPageReducer,
     myInfoPage: myInfoPageReducer,
     myInfoSettings: myInfoSettingsReducer,
+    feedbackPage: feedbackPageReducer,
     matchPage: matchPageReducer,
     matchPageFriendUsername: matchPageFriendUsernameReducer,
     matchConditions: inputMatchConditionsReducer,

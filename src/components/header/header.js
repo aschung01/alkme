@@ -1,6 +1,5 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useScroll } from '../../hooks/useScroll';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
@@ -12,16 +11,15 @@ import './header.css';
 import { resetMyInfoPageState } from '../../containers/my_info/myInfoSlice';
 
 export const Header = (props) => {
-  const { onClick, titleText, backRoute, scrollHeight } = props;
+  const { onClick, titleText, backRoute, transparent } = props;
   const history = useHistory();
-  const { Y } = useScroll();
 
   return (
     <div
       className={
-        scrollHeight <= (8 * window.innerHeight) / 100
-          ? 'InitialHeader'
-          : 'OnScrollHeader'
+        transparent
+          ? 'Header'
+          : 'Header active'
       }
     >
       <div className="HeaderBackButton">
@@ -67,7 +65,7 @@ export const Header = (props) => {
 };
 
 export const HomeHeader = (props) => {
-  const { titleText, feedbackClick, logoutClick, dispatch } = props;
+  const { titleText, logoutClick, dispatch } = props;
   const [expand, setExpand] = React.useState(false);
   const history = useHistory();
 
@@ -101,12 +99,12 @@ export const HomeHeader = (props) => {
         </div>
 
         <div className="FeedbackButton">
-          <IconButton onClick={feedbackClick}>
+          <IconButton onClick={(e) => history.push('/feedback')}>
             <FeedbackIcon
               style={{ padding: '7px', fontSize: '60px', color: 'black' }}
             />
           </IconButton>
-          <span style={{ fontSize: '15px', margin: 'auto' }}>도움</span>
+          <span style={{ fontSize: '15px', margin: 'auto' }}>지원</span>
         </div>
 
         <div className="LogoutButton">

@@ -9,7 +9,6 @@ export const Home = (props) => {
   const { currentUserInfo, dispatch } = props;
   const homeTitleText = `${currentUserInfo.userInfo.username}님 환영합니다!`;
 
-  const feedbackClick = (e) => {};
   const logoutClick = (e) => {
     logout();
   };
@@ -24,7 +23,6 @@ export const Home = (props) => {
         <div className="HomeHeader">
           <HomeHeader
             titleText={homeTitleText}
-            feedbackClick={feedbackClick}
             logoutClick={logoutClick}
             dispatch={dispatch}
           />

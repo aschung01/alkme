@@ -57,9 +57,9 @@ export const Register = (props) => {
     <div className="Register">
       <div className="RegisterContainer">
         {registerPage === 1 ? (
-          <Header onClick={() => dispatch(jumpToPage(1))} backRoute="/" />
+          <Header transparent={true} onClick={() => dispatch(jumpToPage(1))} backRoute="/" />
         ) : (
-          <Header onClick={() => dispatch(jumpToPage(registerPage - 1))} />
+          <Header transparent={true} onClick={() => dispatch(jumpToPage(registerPage - 1))} />
         )}
         {getRegisterPage(props)}
       </div>

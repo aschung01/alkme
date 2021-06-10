@@ -1,20 +1,15 @@
-.InitialHeader {
+.Header {
   display: flex;
+  background: transparent;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   height: 8vh;
-  transition: 1s;
+  transition: 0.5s;
 }
 
-.OnScrollHeader {
-  display: flex;
+.Header.active {
   background: #FFFAEE;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  height: 8vh;
-  transition: 1s;
 }
 
 .HeaderIcon {
