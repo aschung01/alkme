@@ -24,19 +24,49 @@ export const friendUsernameAvailable = (usernameAvailable) => {
   };
 };
 
+export const newFriendUsername = (isNew) => {
+  return {
+    type: 'matchPageFriendUsername/newFriendUsername',
+    payload: isNew,
+  };
+};
+
+export const isUserUsername = (isUser) => {
+  return {
+    type: 'matchPageFriendUsername/isUserUsername',
+    payload: isUser,
+  };
+};
+
+export const resolveFriendUsernameErrors = () => {
+  return {
+    type: 'matchPageFriendUsername/resolveFriendUsernameErrors',
+  };
+};
+
 export const checkFriendUsernameRegex = (username) => {
   const validUsernameRegex = username.length <= 10;
 
   return {
     type: 'matchPageFriendUsername/checkFriendUsernameRegex',
     payload: validUsernameRegex,
-  }
-}
+  };
+};
+
+export const updateMatchPageFriendUsername = (username) => {
+  return {
+    type: 'matchPageFriendUsername/updateMatchPageFriendUsername',
+    payload: username,
+  };
+};
 
 const initialState = {
   lengthError: false,
   inavailableError: false,
+  notNewError: false,
+  isUserError: false,
   helperText: '',
+  friendUsername: '',
 };
 
 export const matchPageFriendUsernameReducer = (
@@ -50,12 +80,36 @@ export const matchPageFriendUsernameReducer = (
         inavailableError: !action.payload,
         helperText: !action.payload ? '존재하지 않는 닉네임입니다' : '',
       };
+    case 'matchPageFriendUsername/newFriendUsername':
+      return {
+        ...state,
+        notNewError: !action.payload,
+        helperText: !action.payload ? '이미 추가한 친구 닉네임입니다' : '',
+      };
+    case 'matchPageFriendUsername/isUserUsername':
+      return {
+        ...state,
+        isUserError: action.payload,
+        helperText: action.payload ? '본인 닉네임을 추가할 수 없습니다' : '',
+      };
+    case 'matchPageFriendUsername/resolveFriendUsernameErrors':
+      return {
+        ...state,
+        inavailableError: false,
+        notNewError: false,
+        isUserError: false,
+      };
     case 'matchPageFriendUsername/checkFriendUsernameRegex':
       return {
         ...state,
         lengthError: !action.payload,
         helperText: !action.payload ? '닉네임이 너무 길어요' : '',
-      }
+      };
+    case 'matchPageFriendUsername/updateMatchPageFriendUsername':
+      return {
+        ...state,
+        friendUsername: action.payload,
+      };
     default:
       return state;
   }
@@ -123,10 +177,17 @@ export const inputMatchConditionsReducer = (
       return {
         ...matchConditions,
         enableNavigationButton: true,
-      }
+      };
     default:
       return matchConditions;
   }
+};
+
+export const updateInputMatchType = (matchType) => {
+  return {
+    type: 'inputMatchInfo/updateInputMatchType',
+    payload: matchType,
+  };
 };
 
 export const updateInputNumPersons = (numPersons) => {
@@ -136,10 +197,17 @@ export const updateInputNumPersons = (numPersons) => {
   };
 };
 
-export const updateInputFriendUsername = (friendUsername) => {
+export const updateInputFriendUsernameData = (friendUsername) => {
   return {
-    type: 'inputMatchInfo/updateInputFriendUsername',
+    type: 'inputMatchInfo/updateInputFriendUsernameData',
     payload: friendUsername,
+  };
+};
+
+export const deleteInputFriendUsernameData = (key) => {
+  return {
+    type: 'inputMatchInfo/deleteInputFriendUsernameData',
+    payload: key,
   };
 };
 
@@ -157,23 +225,53 @@ export const updateInputMatchInfoAgeRange = (ageRange) => {
   };
 };
 
+export const resetInputMatchInfo = () => {
+  return {
+    type: 'inputMatchInfo/resetInputMatchInfo',
+  };
+};
+
 const initialInputMatchInfo = {
+  matchType: '',
   numPersons: 0,
-  friendUsername: '',
+  friendUsernameData: [],
   matchUniversity: [],
   ageRange: [],
 };
 
-export const inputMatchInfoReducer = (inputMatchInfo = initialInputMatchInfo, action) => {
+export const inputMatchInfoReducer = (
+  inputMatchInfo = initialInputMatchInfo,
+  action
+) => {
   switch (action.type) {
+    case 'inputMatchInfo/updateInputMatchType':
+      return { ...inputMatchInfo, matchType: action.payload };
     case 'inputMatchInfo/updateInputNumPersons':
       return { ...inputMatchInfo, numPersons: action.payload };
-    case 'inputMatchInfo/updateInputFriendUsername':
-      return { ...inputMatchInfo, friendUsername: action.payload };
+    case 'inputMatchInfo/updateInputFriendUsernameData':
+      return {
+        ...inputMatchInfo,
+        friendUsernameData: [
+          ...inputMatchInfo.friendUsernameData,
+          {
+            key: inputMatchInfo.friendUsernameData.length,
+            label: action.payload,
+          },
+        ],
+      };
+    case 'inputMatchInfo/deleteInputFriendUsernameData':
+      return {
+        ...inputMatchInfo,
+        friendUsernameData: inputMatchInfo.friendUsernameData.filter(
+          (e) => e.key !== action.payload
+        ),
+      };
     case 'inputMatchInfo/updateInputMatchUniversity':
       return { ...inputMatchInfo, matchUniversity: action.payload };
     case 'inputMatchInfo/updateInputMatchInfoAgeRange':
       return { ...inputMatchInfo, ageRange: action.payload };
+    case 'inputMatchInfo/resetInputMatchInfo':
+      return initialInputMatchInfo;
     default:
       return inputMatchInfo;
   }

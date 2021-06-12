@@ -698,7 +698,7 @@ const getMatchDateBoxStyles = (type) => {
 };
 
 const DisplayMatchDateBox = (props) => {
-  const { type, dates, matchId, dispatch } = props;
+  const { type, dates, matchId } = props;
 
   if (type === 'waiting')
     return matchId.map((id, index) => (

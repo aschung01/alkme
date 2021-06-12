@@ -63,11 +63,15 @@ export const checkAvailableUsername = (username) =>
 export const checkFriendUsernameAvailable = (username) =>
   db
     .ref('users')
-    .orderByChild('username')
+    .orderByChild('username')                                                                                                                                                          
     .equalTo(username)
     .once('value')
     .then(function (snapshot) {
       return snapshot.val() !== null;
+    })
+    .catch((e) => {
+      console.log(e.message);
+      console.log(e.code);
     });
 
 export const updateUserMatchInfo = (matchInfo) => {

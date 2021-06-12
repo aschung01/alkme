@@ -64,6 +64,7 @@ export const App = (props) => {
           </PrivateRoute>
           <PrivateRoute path="/match" currentUserInfo={state.currentUserInfo}>
             <Match
+              currentUserInfo={state.currentUserInfo}
               matchPage={state.matchPage}
               matchPageFriendUsername={state.matchPageFriendUsername}
               matchConditions={state.matchConditions}

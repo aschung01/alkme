@@ -2,10 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   NavigationButton,
-  MatchNumPersonsButton,
+  OptionButton,
   SelectUniversityButton,
   DisabledNavigationButton,
-  SelectedMatchBumPersonsButton,
+  SelectedOptionButton,
+  AddButton,
 } from '../../components/buttons/buttons.js';
 import { Header } from '../../components/header/header.js';
 import { InputRangeSlider } from '../../components/sliders/sliders';
@@ -13,8 +14,11 @@ import { InputTextField } from '../../components/input_text_field/input_text_fie
 import { Title } from '../../components/title/title.js';
 import {
   jumpToPage,
+  updateInputMatchType,
   updateInputNumPersons,
-  updateInputFriendUsername,
+  updateMatchPageFriendUsername,
+  updateInputFriendUsernameData,
+  deleteInputFriendUsernameData,
   friendUsernameAvailable,
   selectUniversity,
   updateAgeRange,
@@ -22,37 +26,68 @@ import {
   updateInputMatchUniversity,
   updateInputMatchInfoAgeRange,
   checkFriendUsernameRegex,
+  resetInputMatchInfo,
+  newFriendUsername,
+  isUserUsername,
+  resolveFriendUsernameErrors,
 } from './matchSlice';
 import './match.css';
 import {
   checkFriendUsernameAvailable,
   updateUserMatchInfo,
 } from '../../firebase/firebaseDb';
+import { ChipsArray } from '../../components/chips_array/chips_array.js';
 
-const numPersonsPageTitleText = '2대2 미팅에 함께\n 나갈 사람이 있나요?';
-const friendUsernamePageTitleText = '함께 나갈 친구의\n 닉네임을 입력해주세요';
+const matchTypePageTitleText = '나가려는 미팅의\n종류를 선택해주세요';
+const numPersonsPageTitleText = '미팅에 함께\n나갈 사람이 있나요?';
+const friendUsernamePageTitleText = '함께 나갈 친구의\n닉네임을 입력해주세요';
 const matchConditionsPageTitleText =
   '희망하시는 미팅 상대의\n 대학, 나이를 알려주세요';
-const matchNotifyPageTitleText = '마지막 단계에요!\n 안내사항을 읽어주세요';
+const matchNotifyPageTitleText = '마지막 단계에요!\n안내사항을 읽어주세요';
 
 function Match(props) {
+  const {
+    currentUserInfo,
+    matchPage,
+    matchPageFriendUsername,
+    matchConditions,
+    inputMatchInfo,
+    dispatch,
+  } = props;
   return (
     <div className="Match">
       <div className="Background1" />
       <div className="Background2" />
-      {getHeader(props)}
-      {getMatchPage(props)}
+      <MatchPageHeader
+        matchPage={matchPage}
+        inputMatchInfo={inputMatchInfo}
+        dispatch={dispatch}
+      />
+      <MatchPageContent
+        currentUserInfo={currentUserInfo}
+        matchPage={matchPage}
+        matchPageFriendUsername={matchPageFriendUsername}
+        matchConditions={matchConditions}
+        inputMatchInfo={inputMatchInfo}
+        dispatch={dispatch}
+      />
       <div className="NavigationButton">{getNavigationButton(props)}</div>
     </div>
   );
 }
 
-const getHeader = (props) => {
+const MatchPageHeader = (props) => {
   const { matchPage, inputMatchInfo, dispatch } = props;
   switch (matchPage) {
     case 1:
       return (
-        <Header onClick={() => dispatch(jumpToPage(1))} backRoute="/home" />
+        <Header
+          onClick={() => {
+            dispatch(jumpToPage(1));
+            dispatch(resetInputMatchInfo());
+          }}
+          backRoute="/home"
+        />
       );
     case 2:
       return <Header onClick={() => dispatch(jumpToPage(matchPage - 1))} />;
@@ -67,8 +102,9 @@ const getHeader = (props) => {
   }
 };
 
-const getMatchPage = (props) => {
+const MatchPageContent = (props) => {
   const {
+    currentUserInfo,
     matchPage,
     matchPageFriendUsername,
     matchConditions,
@@ -77,16 +113,23 @@ const getMatchPage = (props) => {
   } = props;
   switch (matchPage) {
     case 1:
-      return <NumPersonsPage inputMatchInfo={inputMatchInfo} dispatch={dispatch} />;
+      return (
+        <MatchTypePage inputMatchInfo={inputMatchInfo} dispatch={dispatch} />
+      );
     case 2:
       return (
+        <WithFriendPage inputMatchInfo={inputMatchInfo} dispatch={dispatch} />
+      );
+    case 3:
+      return (
         <FriendUsernamePage
+          currentUserInfo={currentUserInfo}
           matchPageFriendUsername={matchPageFriendUsername}
           inputMatchInfo={inputMatchInfo}
           dispatch={dispatch}
         />
       );
-    case 3:
+    case 4:
       return (
         <MatchConditionsPage
           inputMatchInfo={inputMatchInfo}
@@ -94,23 +137,36 @@ const getMatchPage = (props) => {
           dispatch={dispatch}
         />
       );
-    case 4:
-      return <MatchNotifyPage inputMatchInfo={inputMatchInfo} dispatch={dispatch} />;
+    case 5:
+      return (
+        <MatchNotifyPage inputMatchInfo={inputMatchInfo} dispatch={dispatch} />
+      );
     default:
-      return <NumPersonsPage inputMatchInfo={inputMatchInfo} dispatch={dispatch} />;
+      return (
+        <MatchTypePage inputMatchInfo={inputMatchInfo} dispatch={dispatch} />
+      );
   }
 };
 
 const getNavigationButton = (props) => {
   const {
     matchPage,
-    matchPageFriendUsername,
     matchConditions,
     inputMatchInfo,
     dispatch,
   } = props;
   switch (matchPage) {
     case 1:
+      if (inputMatchInfo.matchType === '')
+        return <DisabledNavigationButton buttonText="다음" />;
+      else
+        return (
+          <NavigationButton
+            buttonText="다음"
+            onClick={() => dispatch(jumpToPage(matchPage + 1))}
+          />
+        );
+    case 2:
       if (inputMatchInfo.numPersons === 0)
         return <DisabledNavigationButton buttonText="다음" />;
       else
@@ -125,38 +181,21 @@ const getNavigationButton = (props) => {
             }}
           />
         );
-    case 2:
+    case 3:
       if (
-        inputMatchInfo.friendUsername === '' ||
-        matchPageFriendUsername.lengthError
+        inputMatchInfo.friendUsernameData.length === 0
       )
         return <DisabledNavigationButton buttonText="다음" />;
-      else if (matchPageFriendUsername.inavailableError)
-        return (
-          <NavigationButton
-            buttonText="닉네임 확인"
-            onClick={async () => {
-              const available = await checkFriendUsernameAvailable(
-                inputMatchInfo.friendUsername
-              );
-              dispatch(friendUsernameAvailable(available));
-            }}
-          />
-        );
       else
         return (
           <NavigationButton
             buttonText="다음"
-            onClick={async () => {
-              const available = await checkFriendUsernameAvailable(
-                inputMatchInfo.friendUsername
-              );
-              if (!available) dispatch(friendUsernameAvailable(available));
-              else dispatch(jumpToPage(matchPage + 1));
+            onClick={() => {
+              dispatch(jumpToPage(matchPage + 1));
             }}
           />
         );
-    case 3:
+    case 4:
       if (
         !matchConditions.enableNavigationButton ||
         matchConditions.selectedUniversity.length === 0
@@ -176,7 +215,7 @@ const getNavigationButton = (props) => {
           />
         );
 
-    case 4:
+    case 5:
       return (
         <Link to="/home" style={{ textDecoration: 'none' }}>
           <NavigationButton
@@ -198,33 +237,79 @@ const getNavigationButton = (props) => {
   }
 };
 
-const NumPersonsPage = (props) => {
+const MatchTypePage = (props) => {
+  const { inputMatchInfo, dispatch } = props;
+
+  return (
+    <div className="MatchPage1">
+      <div className="MatchTitle">
+        <Title titleText={matchTypePageTitleText} />
+      </div>
+      <div className="SelectMatchType">
+        {inputMatchInfo.matchType !== '2대2' ? (
+          <OptionButton
+            buttonText="2 대 2 미팅"
+            onClick={() => dispatch(updateInputMatchType('2대2'))}
+          />
+        ) : (
+          <SelectedOptionButton
+            buttonText="2 대 2 미팅"
+            onClick={() => dispatch(updateInputMatchType(''))}
+          />
+        )}
+        {inputMatchInfo.matchType !== '3대3' ? (
+          <OptionButton
+            buttonText="3 대 3 미팅"
+            onClick={() => dispatch(updateInputMatchType('3대3'))}
+          />
+        ) : (
+          <SelectedOptionButton
+            buttonText="3 대 3 미팅"
+            onClick={() => dispatch(updateInputMatchType(''))}
+          />
+        )}
+        {inputMatchInfo.matchType !== '4대4' ? (
+          <OptionButton
+            buttonText="4 대 4 미팅"
+            onClick={() => dispatch(updateInputMatchType('4대4'))}
+          />
+        ) : (
+          <SelectedOptionButton
+            buttonText="4 대 4 미팅"
+            onClick={() => dispatch(updateInputMatchType(''))}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
+const WithFriendPage = (props) => {
   const { inputMatchInfo, dispatch } = props;
   return (
-    <div className="Page1">
-      <div className="Title">
+    <div className="MatchPage2">
+      <div className="MatchTitle">
         <Title titleText={numPersonsPageTitleText} />
       </div>
-
       <div className="SelectNumPersons">
         {inputMatchInfo.numPersons !== 1 ? (
-          <MatchNumPersonsButton
+          <OptionButton
             buttonText="혼자 나가요"
             onClick={() => dispatch(updateInputNumPersons(1))}
           />
         ) : (
-          <SelectedMatchBumPersonsButton
+          <SelectedOptionButton
             buttonText="혼자 나가요"
             onClick={() => dispatch(updateInputNumPersons(0))}
           />
         )}
         {inputMatchInfo.numPersons !== 2 ? (
-          <MatchNumPersonsButton
+          <OptionButton
             buttonText="친구랑 같이 나가요"
             onClick={() => dispatch(updateInputNumPersons(2))}
           />
         ) : (
-          <SelectedMatchBumPersonsButton
+          <SelectedOptionButton
             buttonText="친구랑 같이 나가요"
             onClick={() => dispatch(updateInputNumPersons(0))}
           />
@@ -235,24 +320,71 @@ const NumPersonsPage = (props) => {
 };
 
 const FriendUsernamePage = (props) => {
-  const { matchPageFriendUsername, dispatch } = props;
+  const { currentUserInfo, inputMatchInfo, matchPageFriendUsername, dispatch } =
+    props;
+  const maxFriendNum = Number(inputMatchInfo.matchType.slice('대')[0]) - 1;
+
   return (
-    <div className="Page2">
-      <div className="Title">
+    <div className="MatchPage3">
+      <div className="MatchTitle">
         <Title titleText={friendUsernamePageTitleText} />
       </div>
+      <div className="FriendUsernameGuideText">
+        <p>{inputMatchInfo.matchType} 미팅을 선택하셨어요.</p>
+        <p>최대 {maxFriendNum}명의 친구를 추가할 수 있어요</p>
+      </div>
+      <ChipsArray
+        array={inputMatchInfo.friendUsernameData}
+        onDelete={(chipToDelete) => () => {
+          dispatch(deleteInputFriendUsernameData(chipToDelete.key));
+        }}
+      />
       <div className="InputFriendUsername">
-        <InputTextField
-          error={
-            matchPageFriendUsername.lengthError ||
-            matchPageFriendUsername.inavailableError
+        <div className="InputFriendUsernameTextField">
+          <InputTextField
+            error={
+              matchPageFriendUsername.lengthError ||
+              matchPageFriendUsername.inavailableError ||
+              matchPageFriendUsername.notNewError ||
+              matchPageFriendUsername.isUserError
+            }
+            onChange={(e) => {
+              dispatch(updateMatchPageFriendUsername(e.target.value));
+              dispatch(checkFriendUsernameRegex(e.target.value));
+            }}
+            value={matchPageFriendUsername.friendUsername}
+            label="닉네임"
+            helperText={matchPageFriendUsername.helperText}
+          />
+        </div>
+        <AddButton
+          isActivated={
+            matchPageFriendUsername.friendUsername !== '' && inputMatchInfo.friendUsernameData.length < maxFriendNum &&
+            !matchPageFriendUsername.lengthError
           }
-          onChange={(e) => {
-            dispatch(updateInputFriendUsername(e.target.value));
-            dispatch(checkFriendUsernameRegex(e.target.value));
+          onClick={async () => {
+            const available = await checkFriendUsernameAvailable(
+              matchPageFriendUsername.friendUsername
+            );
+            const newFriend = inputMatchInfo.friendUsernameData.every(
+              (e) => e.label !== matchPageFriendUsername.friendUsername
+            );
+            const isUser =
+              matchPageFriendUsername.friendUsername ===
+              currentUserInfo.userInfo.username;
+            if (!available) dispatch(friendUsernameAvailable(available));
+            else if (!newFriend) dispatch(newFriendUsername(newFriend));
+            else if (isUser) dispatch(isUserUsername(isUser));
+            else {
+              dispatch(resolveFriendUsernameErrors());
+              dispatch(updateMatchPageFriendUsername(''));
+              dispatch(
+                updateInputFriendUsernameData(
+                  matchPageFriendUsername.friendUsername
+                )
+              );
+            }
           }}
-          label="닉네임"
-          helperText={matchPageFriendUsername.helperText}
         />
       </div>
     </div>
@@ -262,8 +394,8 @@ const FriendUsernamePage = (props) => {
 const MatchConditionsPage = (props) => {
   const { matchConditions, dispatch } = props;
   return (
-    <div className="Page3">
-      <div className="Title">
+    <div className="MatchPage4">
+      <div className="MatchTitle">
         <Title titleText={matchConditionsPageTitleText} />
       </div>
       <div className="InputMatchConditions">
@@ -314,8 +446,8 @@ const MatchConditionsPage = (props) => {
 
 const MatchNotifyPage = (props) => {
   return (
-    <div className="Page4">
-      <div className="Title">
+    <div className="MatchPage5">
+      <div className="MatchTitle">
         <Title titleText={matchNotifyPageTitleText} />
       </div>
       <div className="MatchNotification">
