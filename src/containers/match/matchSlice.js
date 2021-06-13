@@ -211,10 +211,10 @@ export const deleteInputFriendUsernameData = (key) => {
   };
 };
 
-export const updateInputMatchUniversity = (matchUniversity) => {
+export const updateInputMatchUniversities = (matchUniversities) => {
   return {
-    type: 'inputMatchInfo/updateInputMatchUniversity',
-    payload: matchUniversity,
+    type: 'inputMatchInfo/updateInputMatchUniversities',
+    payload: matchUniversities,
   };
 };
 
@@ -232,10 +232,10 @@ export const resetInputMatchInfo = () => {
 };
 
 const initialInputMatchInfo = {
-  matchType: '',
+  matchType: 0,
   numPersons: 0,
   friendUsernameData: [],
-  matchUniversity: [],
+  matchUniversities: [],
   ageRange: [],
 };
 
@@ -266,8 +266,8 @@ export const inputMatchInfoReducer = (
           (e) => e.key !== action.payload
         ),
       };
-    case 'inputMatchInfo/updateInputMatchUniversity':
-      return { ...inputMatchInfo, matchUniversity: action.payload };
+    case 'inputMatchInfo/updateInputMatchUniversities':
+      return { ...inputMatchInfo, matchUniversities: action.payload };
     case 'inputMatchInfo/updateInputMatchInfoAgeRange':
       return { ...inputMatchInfo, ageRange: action.payload };
     case 'inputMatchInfo/resetInputMatchInfo':

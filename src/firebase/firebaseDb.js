@@ -1,5 +1,4 @@
 import { db, auth } from './initFirebase';
-import { onAuthStateChanged } from './firebaseAuth';
 
 export const registerUserInfo = (uid, userInfo) =>
   db.ref('users').child(uid).set(userInfo);
@@ -63,7 +62,7 @@ export const checkAvailableUsername = (username) =>
 export const checkFriendUsernameAvailable = (username) =>
   db
     .ref('users')
-    .orderByChild('username')                                                                                                                                                          
+    .orderByChild('username')
     .equalTo(username)
     .once('value')
     .then(function (snapshot) {
@@ -74,13 +73,56 @@ export const checkFriendUsernameAvailable = (username) =>
       console.log(e.code);
     });
 
-export const updateUserMatchInfo = (matchInfo) => {
-  onAuthStateChanged((user) => {
-    if (user) db.ref('usersMatchInfo').child(user.uid).set(matchInfo);
-  });
+const getUidByUsername = (username) =>
+  db
+    .ref('users')
+    .orderByChild('username')
+    .equalTo(username)
+    .once('value')
+    .then((snapshot) => Object.keys(snapshot.val())[0]);
+
+export const updateDbEnrolledMatchLists = async (userInfo, matchInfo) => {
+  const usersValue = [
+    { uid: auth.currentUser.uid, username: userInfo.username },
+  ];
+
+  for (let i = 0; i < matchInfo.friendUsernameData.length; i++) {
+    const friendUid = await getUidByUsername(
+      matchInfo.friendUsernameData[i].label
+    );
+    usersValue.push({
+      uid: friendUid,
+      username: matchInfo.friendUsernameData[i].label,
+    });
+  }
+
+  const userEnrolledMatchData = {
+    matchType: matchInfo.matchType,
+    users: usersValue,
+    matchAgeRange: matchInfo.ageRange,
+    matchUniversities: matchInfo.matchUniversities,
+  };
+
+  const enrolledMatchList = `type${matchInfo.matchType}${
+    userInfo.gender === '남성' ? 'Male' : 'Female'
+  }EnrolledMatchList`;
+
+  const newEnrolledMatchKey = db.ref().child(enrolledMatchList).push().key;
+  const usersEnrolledMatchListUpdates = {};
+  const enrolledMatchListUpdates = {};
+  for (let i = 0; i < usersValue.length; i++) {
+    usersEnrolledMatchListUpdates[
+      usersValue[i].uid + '/' + newEnrolledMatchKey
+    ] = userEnrolledMatchData;
+  }
+  enrolledMatchListUpdates[newEnrolledMatchKey] =
+    userEnrolledMatchData;
+
+  db.ref('usersEnrolledMatchList').update(usersEnrolledMatchListUpdates);
+  db.ref(enrolledMatchList).update(enrolledMatchListUpdates);
 };
 
-export const updateInputFeedbackDb = (feedback) => {
+export const updateDbInputFeedback = (feedback) => {
   const uid = auth.currentUser.uid;
   const feedbackData = {
     uid: uid,

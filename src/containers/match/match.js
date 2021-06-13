@@ -23,7 +23,7 @@ import {
   selectUniversity,
   updateAgeRange,
   enableNavigationButton,
-  updateInputMatchUniversity,
+  updateInputMatchUniversities,
   updateInputMatchInfoAgeRange,
   checkFriendUsernameRegex,
   resetInputMatchInfo,
@@ -34,7 +34,7 @@ import {
 import './match.css';
 import {
   checkFriendUsernameAvailable,
-  updateUserMatchInfo,
+  updateDbEnrolledMatchLists,
 } from '../../firebase/firebaseDb';
 import { ChipsArray } from '../../components/chips_array/chips_array.js';
 
@@ -71,7 +71,15 @@ function Match(props) {
         inputMatchInfo={inputMatchInfo}
         dispatch={dispatch}
       />
-      <div className="NavigationButton">{getNavigationButton(props)}</div>
+      <div className="NavigationButton">
+        <MatchPageNavigationButton
+          currentUserInfo={currentUserInfo}
+          matchPage={matchPage}
+          matchConditions={matchConditions}
+          inputMatchInfo={inputMatchInfo}
+          dispatch={dispatch}
+        />
+      </div>
     </div>
   );
 }
@@ -148,8 +156,9 @@ const MatchPageContent = (props) => {
   }
 };
 
-const getNavigationButton = (props) => {
+const MatchPageNavigationButton = (props) => {
   const {
+    currentUserInfo,
     matchPage,
     matchConditions,
     inputMatchInfo,
@@ -157,7 +166,7 @@ const getNavigationButton = (props) => {
   } = props;
   switch (matchPage) {
     case 1:
-      if (inputMatchInfo.matchType === '')
+      if (inputMatchInfo.matchType === 0)
         return <DisabledNavigationButton buttonText="다음" />;
       else
         return (
@@ -182,9 +191,7 @@ const getNavigationButton = (props) => {
           />
         );
     case 3:
-      if (
-        inputMatchInfo.friendUsernameData.length === 0
-      )
+      if (inputMatchInfo.friendUsernameData.length === 0)
         return <DisabledNavigationButton buttonText="다음" />;
       else
         return (
@@ -208,7 +215,7 @@ const getNavigationButton = (props) => {
             onClick={() => {
               dispatch(jumpToPage(matchPage + 1));
               dispatch(
-                updateInputMatchUniversity(matchConditions.selectedUniversity)
+                updateInputMatchUniversities(matchConditions.selectedUniversity)
               );
               dispatch(updateInputMatchInfoAgeRange(matchConditions.ageRange));
             }}
@@ -222,7 +229,10 @@ const getNavigationButton = (props) => {
             buttonText="등록하기"
             onClick={() => {
               dispatch(jumpToPage(1));
-              updateUserMatchInfo(inputMatchInfo);
+              updateDbEnrolledMatchLists(
+                currentUserInfo.userInfo,
+                inputMatchInfo
+              );
             }}
           />
         </Link>
@@ -246,37 +256,37 @@ const MatchTypePage = (props) => {
         <Title titleText={matchTypePageTitleText} />
       </div>
       <div className="SelectMatchType">
-        {inputMatchInfo.matchType !== '2대2' ? (
+        {inputMatchInfo.matchType !== 2 ? (
           <OptionButton
             buttonText="2 대 2 미팅"
-            onClick={() => dispatch(updateInputMatchType('2대2'))}
+            onClick={() => dispatch(updateInputMatchType(2))}
           />
         ) : (
           <SelectedOptionButton
             buttonText="2 대 2 미팅"
-            onClick={() => dispatch(updateInputMatchType(''))}
+            onClick={() => dispatch(updateInputMatchType(0))}
           />
         )}
-        {inputMatchInfo.matchType !== '3대3' ? (
+        {inputMatchInfo.matchType !== 3 ? (
           <OptionButton
             buttonText="3 대 3 미팅"
-            onClick={() => dispatch(updateInputMatchType('3대3'))}
+            onClick={() => dispatch(updateInputMatchType(3))}
           />
         ) : (
           <SelectedOptionButton
             buttonText="3 대 3 미팅"
-            onClick={() => dispatch(updateInputMatchType(''))}
+            onClick={() => dispatch(updateInputMatchType(0))}
           />
         )}
-        {inputMatchInfo.matchType !== '4대4' ? (
+        {inputMatchInfo.matchType !== 4 ? (
           <OptionButton
             buttonText="4 대 4 미팅"
-            onClick={() => dispatch(updateInputMatchType('4대4'))}
+            onClick={() => dispatch(updateInputMatchType(4))}
           />
         ) : (
           <SelectedOptionButton
             buttonText="4 대 4 미팅"
-            onClick={() => dispatch(updateInputMatchType(''))}
+            onClick={() => dispatch(updateInputMatchType(0))}
           />
         )}
       </div>
@@ -322,7 +332,7 @@ const WithFriendPage = (props) => {
 const FriendUsernamePage = (props) => {
   const { currentUserInfo, inputMatchInfo, matchPageFriendUsername, dispatch } =
     props;
-  const maxFriendNum = Number(inputMatchInfo.matchType.slice('대')[0]) - 1;
+  const maxFriendNum = inputMatchInfo.matchType - 1;
 
   return (
     <div className="MatchPage3">
@@ -330,7 +340,10 @@ const FriendUsernamePage = (props) => {
         <Title titleText={friendUsernamePageTitleText} />
       </div>
       <div className="FriendUsernameGuideText">
-        <p>{inputMatchInfo.matchType} 미팅을 선택하셨어요.</p>
+        <p>
+          {inputMatchInfo.matchType}대{inputMatchInfo.matchType} 미팅을
+          선택하셨어요.
+        </p>
         <p>최대 {maxFriendNum}명의 친구를 추가할 수 있어요</p>
       </div>
       <ChipsArray
@@ -359,7 +372,8 @@ const FriendUsernamePage = (props) => {
         </div>
         <AddButton
           isActivated={
-            matchPageFriendUsername.friendUsername !== '' && inputMatchInfo.friendUsernameData.length < maxFriendNum &&
+            matchPageFriendUsername.friendUsername !== '' &&
+            inputMatchInfo.friendUsernameData.length < maxFriendNum &&
             !matchPageFriendUsername.lengthError
           }
           onClick={async () => {

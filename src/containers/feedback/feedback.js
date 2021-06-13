@@ -3,7 +3,7 @@ import { SuccessAlert } from '../../components/alerts/alerts';
 import { TextButton } from '../../components/buttons/buttons';
 import { Header } from '../../components/header/header';
 import { MultilineTextField } from '../../components/multiline_text_field/multiline_text_field';
-import { updateInputFeedbackDb } from '../../firebase/firebaseDb';
+import { updateDbInputFeedback } from '../../firebase/firebaseDb';
 import './feedback.css';
 import {
   changeHeaderBackground,
@@ -47,7 +47,7 @@ export const Feedback = (props) => {
               buttonText="전송"
               color="#EF515F"
               onClick={(e) => {
-                updateInputFeedbackDb(feedbackPage.feedback)
+                updateDbInputFeedback(feedbackPage.feedback)
                   .then(() => {
                     dispatch(updateInputFeedback(''));
                     dispatch(triggerSuccessAlert());
