@@ -11,6 +11,8 @@ import {
 import { Header } from '../../components/header/header.js';
 import { InputRangeSlider } from '../../components/sliders/sliders';
 import { InputTextField } from '../../components/input_text_field/input_text_field.js';
+import { LabeledCheckbox } from '../../components/labeled_checkbox/labeled_checkbox';
+import { MultipleDatePicker } from '../../components/multiple_date_picker/multiple_date_picker';
 import { Title } from '../../components/title/title.js';
 import {
   jumpToPage,
@@ -25,14 +27,18 @@ import {
   enableNavigationButton,
   updateInputMatchUniversities,
   updateInputMatchInfoAgeRange,
+  updateInputAvailableDates,
   checkFriendUsernameRegex,
   resetInputMatchInfo,
   newFriendUsername,
+  doesFriendGenderMatch,
   isUserUsername,
   resolveFriendUsernameErrors,
+  toggleSelectAllUniversities,
 } from './matchSlice';
 import './match.css';
 import {
+  checkFriendGenderMatch,
   checkFriendUsernameAvailable,
   updateDbEnrolledMatchLists,
 } from '../../firebase/firebaseDb';
@@ -43,6 +49,8 @@ const numPersonsPageTitleText = '미팅에 함께\n나갈 사람이 있나요?';
 const friendUsernamePageTitleText = '함께 나갈 친구의\n닉네임을 입력해주세요';
 const matchConditionsPageTitleText =
   '희망하시는 미팅 상대의\n 대학, 나이를 알려주세요';
+const matchAvailableDatesPageTitleText =
+  '희망하시는 미팅 날짜를 모두 선택해주세요';
 const matchNotifyPageTitleText = '마지막 단계에요!\n안내사항을 읽어주세요';
 
 function Match(props) {
@@ -58,6 +66,7 @@ function Match(props) {
     <div className="Match">
       <div className="Background1" />
       <div className="Background2" />
+      <MatchPageTitle matchPage={matchPage} />
       <MatchPageHeader
         matchPage={matchPage}
         inputMatchInfo={inputMatchInfo}
@@ -110,6 +119,54 @@ const MatchPageHeader = (props) => {
   }
 };
 
+const MatchPageTitle = (props) => {
+  const { matchPage } = props;
+  switch (matchPage) {
+    case 1:
+      return (
+        <div className="MatchTitle">
+          <Title titleText={matchTypePageTitleText} />
+        </div>
+      );
+    case 2:
+      return (
+        <div className="MatchTitle">
+          <Title titleText={numPersonsPageTitleText} />
+        </div>
+      );
+    case 3:
+      return (
+        <div className="MatchTitle">
+          <Title titleText={friendUsernamePageTitleText} />
+        </div>
+      );
+    case 4:
+      return (
+        <div className="MatchTitle">
+          <Title titleText={matchConditionsPageTitleText} />
+        </div>
+      );
+    case 5:
+      return (
+        <div className="MatchTitle">
+          <Title titleText={matchAvailableDatesPageTitleText} />
+        </div>
+      );
+    case 6:
+      return (
+        <div className="MatchTitle">
+          <Title titleText={matchNotifyPageTitleText} />
+        </div>
+      );
+    default:
+      return (
+        <div className="MatchTitle">
+          <Title titleText={matchTypePageTitleText} />
+        </div>
+      );
+  }
+};
+
 const MatchPageContent = (props) => {
   const {
     currentUserInfo,
@@ -146,6 +203,13 @@ const MatchPageContent = (props) => {
         />
       );
     case 5:
+      return (
+        <MatchAvailableDatesPage
+          inputMatchInfo={inputMatchInfo}
+          dispatch={dispatch}
+        />
+      );
+    case 6:
       return (
         <MatchNotifyPage inputMatchInfo={inputMatchInfo} dispatch={dispatch} />
       );
@@ -221,8 +285,26 @@ const MatchPageNavigationButton = (props) => {
             }}
           />
         );
-
     case 5:
+      // if (
+      //   !matchConditions.enableNavigationButton ||
+      //   matchConditions.selectedUniversity.length === 0
+      // )
+      //   return <DisabledNavigationButton buttonText="다음" />;
+      // else
+      return (
+        <NavigationButton
+          buttonText="다음"
+          onClick={() => {
+            dispatch(jumpToPage(matchPage + 1));
+            dispatch(
+              updateInputMatchUniversities(matchConditions.selectedUniversity)
+            );
+            dispatch(updateInputMatchInfoAgeRange(matchConditions.ageRange));
+          }}
+        />
+      );
+    case 6:
       return (
         <Link to="/home" style={{ textDecoration: 'none' }}>
           <NavigationButton
@@ -252,9 +334,6 @@ const MatchTypePage = (props) => {
 
   return (
     <div className="MatchPage1">
-      <div className="MatchTitle">
-        <Title titleText={matchTypePageTitleText} />
-      </div>
       <div className="SelectMatchType">
         {inputMatchInfo.matchType !== 2 ? (
           <OptionButton
@@ -298,9 +377,6 @@ const WithFriendPage = (props) => {
   const { inputMatchInfo, dispatch } = props;
   return (
     <div className="MatchPage2">
-      <div className="MatchTitle">
-        <Title titleText={numPersonsPageTitleText} />
-      </div>
       <div className="SelectNumPersons">
         {inputMatchInfo.numPersons !== 1 ? (
           <OptionButton
@@ -336,9 +412,6 @@ const FriendUsernamePage = (props) => {
 
   return (
     <div className="MatchPage3">
-      <div className="MatchTitle">
-        <Title titleText={friendUsernamePageTitleText} />
-      </div>
       <div className="FriendUsernameGuideText">
         <p>
           {inputMatchInfo.matchType}대{inputMatchInfo.matchType} 미팅을
@@ -359,6 +432,7 @@ const FriendUsernamePage = (props) => {
               matchPageFriendUsername.lengthError ||
               matchPageFriendUsername.inavailableError ||
               matchPageFriendUsername.notNewError ||
+              matchPageFriendUsername.genderError ||
               matchPageFriendUsername.isUserError
             }
             onChange={(e) => {
@@ -383,11 +457,17 @@ const FriendUsernamePage = (props) => {
             const newFriend = inputMatchInfo.friendUsernameData.every(
               (e) => e.label !== matchPageFriendUsername.friendUsername
             );
+            const friendGenderMatch = await checkFriendGenderMatch(
+              matchPageFriendUsername.friendUsername,
+              currentUserInfo.userInfo.gender
+            );
             const isUser =
               matchPageFriendUsername.friendUsername ===
               currentUserInfo.userInfo.username;
             if (!available) dispatch(friendUsernameAvailable(available));
             else if (!newFriend) dispatch(newFriendUsername(newFriend));
+            else if (!friendGenderMatch)
+              dispatch(doesFriendGenderMatch(friendGenderMatch));
             else if (isUser) dispatch(isUserUsername(isUser));
             else {
               dispatch(resolveFriendUsernameErrors());
@@ -409,14 +489,19 @@ const MatchConditionsPage = (props) => {
   const { matchConditions, dispatch } = props;
   return (
     <div className="MatchPage4">
-      <div className="MatchTitle">
-        <Title titleText={matchConditionsPageTitleText} />
-      </div>
       <div className="InputMatchConditions">
         <div className="SelectUniversity">
-          <p>
-            대학 <span>선택</span>
-          </p>
+          <div className="SelectUniversityHeader">
+            <p>
+              대학 <span>선택</span>
+            </p>
+            <LabeledCheckbox
+              label="모두 선택"
+              onChange={() => dispatch(toggleSelectAllUniversities())}
+              checked={matchConditions.unselectedUniversity.length === 0}
+            />
+          </div>
+
           <div className="SelectUniversityButtons">
             <SelectUniversityButton
               buttonText="서울대"
@@ -458,12 +543,32 @@ const MatchConditionsPage = (props) => {
   );
 };
 
-const MatchNotifyPage = (props) => {
+const MatchAvailableDatesPage = (props) => {
+  const { inputMatchInfo, dispatch } = props;
   return (
     <div className="MatchPage5">
-      <div className="MatchTitle">
-        <Title titleText={matchNotifyPageTitleText} />
+      <p className="AvailableDatesGuideText">
+        현재 날짜로부터 2주 이내로만 선택해주세요. 미팅이 매칭된 이후에는 날짜
+        변경이 불가합니다
+      </p>
+      <div className="MultipleDatePicker">
+        <MultipleDatePicker
+          values={inputMatchInfo.availableDates}
+          onChange={(array) => {
+            const availableDates = array.map((dateObject) =>
+              dateObject.format('YYYY/MM/DD/ddd')
+            );
+            dispatch(updateInputAvailableDates(availableDates));
+          }}
+        />
       </div>
+    </div>
+  );
+};
+
+const MatchNotifyPage = (props) => {
+  return (
+    <div className="MatchPage6">
       <div className="MatchNotification">
         <p>이러쿵 저러쿵</p>
       </div>

@@ -58,6 +58,9 @@ const navigationButtonStyles = makeStyles({
     '&:focus': {
       backgroundColor: '#F4838A',
     },
+    '&:hover': {
+      backgroundColor: '#F4838A',
+    },
     backgroundColor: '#F4838A',
     border: 0,
     borderRadius: 5,

@@ -73,6 +73,15 @@ export const checkFriendUsernameAvailable = (username) =>
       console.log(e.code);
     });
 
+export const checkFriendGenderMatch = async (username, gender) => {
+  const uid = await getUidByUsername(username);
+  const friendGender = await db
+    .ref('users/' + uid + '/gender')
+    .once('value')
+    .then((snapshot) => snapshot.val());
+  return friendGender === gender;
+};
+
 const getUidByUsername = (username) =>
   db
     .ref('users')
@@ -99,6 +108,7 @@ export const updateDbEnrolledMatchLists = async (userInfo, matchInfo) => {
   const userEnrolledMatchData = {
     matchType: matchInfo.matchType,
     users: usersValue,
+    availableDates: matchInfo.availableDates,
     matchAgeRange: matchInfo.ageRange,
     matchUniversities: matchInfo.matchUniversities,
   };
@@ -115,8 +125,7 @@ export const updateDbEnrolledMatchLists = async (userInfo, matchInfo) => {
       usersValue[i].uid + '/' + newEnrolledMatchKey
     ] = userEnrolledMatchData;
   }
-  enrolledMatchListUpdates[newEnrolledMatchKey] =
-    userEnrolledMatchData;
+  enrolledMatchListUpdates[newEnrolledMatchKey] = userEnrolledMatchData;
 
   db.ref('usersEnrolledMatchList').update(usersEnrolledMatchListUpdates);
   db.ref(enrolledMatchList).update(enrolledMatchListUpdates);

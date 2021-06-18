@@ -22,7 +22,7 @@ const ageMarks = [
 
 const CustomSlider = withStyles({
   root: {
-    color: '#EF515F',
+    color: '#F4838A',
     height: 20,
   },
   thumb: {
@@ -34,6 +34,11 @@ const CustomSlider = withStyles({
     '&:focus, &:hover, &$active': {
       boxShadow: 'inherit',
     },
+  },
+  valueLabel: {
+    backgroundColor: '#F4838A',
+    left: 'calc(-50% + 14px)',
+    borderRadius: '20px',
   },
   active: {},
   track: {
@@ -47,9 +52,6 @@ const CustomSlider = withStyles({
   markLabel: {
     fontSize: '16px',
     color: 'black',
-  },
-  valueLabel: {
-    left: 'calc(-50% + 14px)',
   },
 })(Slider);
 
@@ -69,7 +71,7 @@ export const InputRangeSlider = (props) => {
         value={ageRange}
         onChange={onChange}
         marks={ageMarks}
-        valueLabelDisplay="auto"
+        valueLabelDisplay="on"
         getAriaValueText={valueText}
       />
     </div>
@@ -88,7 +90,7 @@ export const InputSlider = (props) => {
         value={value}
         onChange={onChange}
         marks={ageMarks}
-        valueLabelDisplay="auto"
+        valueLabelDisplay="on"
         getAriaValueText={valueText}
       />
     </div>

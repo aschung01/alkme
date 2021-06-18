@@ -31,6 +31,13 @@ export const newFriendUsername = (isNew) => {
   };
 };
 
+export const doesFriendGenderMatch = (genderMatch) => {
+  return {
+    type: 'matchPageFriendUsername/doesFriendGenderMatch',
+    payload: genderMatch,
+  };
+};
+
 export const isUserUsername = (isUser) => {
   return {
     type: 'matchPageFriendUsername/isUserUsername',
@@ -64,6 +71,7 @@ const initialState = {
   lengthError: false,
   inavailableError: false,
   notNewError: false,
+  genderError: false,
   isUserError: false,
   helperText: '',
   friendUsername: '',
@@ -86,6 +94,14 @@ export const matchPageFriendUsernameReducer = (
         notNewError: !action.payload,
         helperText: !action.payload ? '이미 추가한 친구 닉네임입니다' : '',
       };
+    case 'matchPageFriendUsername/doesFriendGenderMatch':
+      return {
+        ...state,
+        genderError: !action.payload,
+        helperText: !action.payload
+          ? '본인과 같은 성별의 친구만 추가할 수 있어요'
+          : '',
+      };
     case 'matchPageFriendUsername/isUserUsername':
       return {
         ...state,
@@ -97,6 +113,7 @@ export const matchPageFriendUsernameReducer = (
         ...state,
         inavailableError: false,
         notNewError: false,
+        genderError: false,
         isUserError: false,
       };
     case 'matchPageFriendUsername/checkFriendUsernameRegex':
@@ -119,6 +136,12 @@ export const selectUniversity = (university) => {
   return {
     type: 'inputMatchConditions/selectUniversity',
     payload: university,
+  };
+};
+
+export const toggleSelectAllUniversities = () => {
+  return {
+    type: 'inputMatchConditions/toggleSelectAllUniversities',
   };
 };
 
@@ -167,6 +190,19 @@ export const inputMatchConditionsReducer = (
           unselectedUniversity: matchConditions.unselectedUniversity.filter(
             (e) => e !== action.payload
           ),
+        };
+    case 'inputMatchConditions/toggleSelectAllUniversities':
+      if (matchConditions.unselectedUniversity.length === 0)
+        return {
+          ...matchConditions,
+          selectedUniversity: [],
+          unselectedUniversity: initialMatchConditions.selectedUniversity,
+        };
+      else
+        return {
+          ...matchConditions,
+          selectedUniversity: initialMatchConditions.selectedUniversity,
+          unselectedUniversity: [],
         };
     case 'inputMatchConditions/updateAgeRange':
       return {
@@ -225,6 +261,13 @@ export const updateInputMatchInfoAgeRange = (ageRange) => {
   };
 };
 
+export const updateInputAvailableDates = (dates) => {
+  return {
+    type: 'inputMatchInfo/updateInputAvailableDates',
+    payload: dates,
+  };
+};
+
 export const resetInputMatchInfo = () => {
   return {
     type: 'inputMatchInfo/resetInputMatchInfo',
@@ -234,6 +277,7 @@ export const resetInputMatchInfo = () => {
 const initialInputMatchInfo = {
   matchType: 0,
   numPersons: 0,
+  availableDates: [],
   friendUsernameData: [],
   matchUniversities: [],
   ageRange: [],
@@ -270,6 +314,8 @@ export const inputMatchInfoReducer = (
       return { ...inputMatchInfo, matchUniversities: action.payload };
     case 'inputMatchInfo/updateInputMatchInfoAgeRange':
       return { ...inputMatchInfo, ageRange: action.payload };
+    case 'inputMatchInfo/updateInputAvailableDates':
+      return { ...inputMatchInfo, availableDates: action.payload };
     case 'inputMatchInfo/resetInputMatchInfo':
       return initialInputMatchInfo;
     default:

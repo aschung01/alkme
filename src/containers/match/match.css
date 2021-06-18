@@ -1,8 +1,8 @@
 .Match {
-  display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
+  bottom: 0;
+  overflow: auto;
   height: 100vh;
   width: 100vw;
 }
@@ -11,18 +11,31 @@
 .MatchPage2,
 .MatchPage3,
 .MatchPage4,
-.MatchPage5 {
-  position: initial;
+.MatchPage5,
+.MatchPage6 {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: fixed;
+  top: 25vh;
   z-index: 10;
+  height: 56vh;
+  width: 100vw;
+  padding-bottom: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .MatchTitle {
-  position: initial;
+  position: fixed;
+  top: 8vh;
+  height: 17vh;
   z-index: 10;
 }
 
 .Background1 {
-  position: absolute;
+  position: fixed;
   z-index: 0;
   height: 30vh;
   width: 100%;
@@ -31,7 +44,7 @@
 }
 
 .Background2 {
-  position: absolute;
+  position: fixed;
   z-index: 1;
   height: 75vh;
   width: 100%;
@@ -58,8 +71,10 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  margin-top: 10px;
+  align-self: flex-start;
+  margin-top: 20px;
   margin-left: 20px;
+  margin-bottom: 20px;
 }
 
 .MatchPage3 .FriendUsernameGuideText > p {
@@ -72,6 +87,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 85vw;
 }
 
 .InputFriendUsernameTextField {
@@ -91,14 +107,21 @@
   padding: 0 10px;
 }
 
-.MatchPage4 .InputMatchConditions .SelectUniversity > p {
+.MatchPage4 .InputMatchConditions .SelectUniversity .SelectUniversityHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.MatchPage4 .InputMatchConditions .SelectUniversity .SelectUniversityHeader > p {
   font-family: 'Noto Sans';
   font-size: 18px;
   font-weight: 600;
   font-stretch: extra-condensed;
+  margin-right: 20px;
 }
 
-.MatchPage4 .InputMatchConditions .SelectUniversity > p > span {
+.MatchPage4 .InputMatchConditions .SelectUniversity .SelectUniversityHeader > p > span {
   font-size: 17px;
   font-weight: normal;
 }
@@ -121,7 +144,7 @@
   font-size: 18px;
   font-weight: 600;
   font-stretch: extra-condensed;
-  margin-bottom: 50px;
+  margin-bottom: 65px;
 }
 
 .MatchPage4 .InputMatchConditions .InputAgeRange > p > span {
@@ -129,15 +152,30 @@
   font-weight: normal;
 }
 
-.MatchPage5 .MatchNotification {
+.MatchPage5 .AvailableDatesGuideText {
+  margin: 20px 20px;
+}
+
+.MatchPage5 .MultipleDatePicker {
+  display: flex;
+  height: max-content;
+  width: 100%;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-bottom: 10px;
+}
+
+.MatchPage6 .MatchNotification {
   display: flex;
   margin: 5vh 10vw;
 }
 
 .NavigationButton {
-  position: absolute;
+  height: 9vh;
+  position: fixed;
   z-index: 11;
-  bottom: 2vh;
-  margin: 10vh 10vw;
-  color: inherit;
+  top: auto;
+  bottom:0;
+  margin: 4vh 10vw 6vh;
 }
