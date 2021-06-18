@@ -28,7 +28,7 @@ export const Home = (props) => {
           />
         </div>
         <div className="Routes">
-          <Link to="/terms_of_use" className="AboutServiceButton">
+          <Link to="/about" className="AboutServiceButton">
             <RouteButton buttonText="서비스 이용방법" />
           </Link>
           <Link to="/match" className="MatchStartButton">

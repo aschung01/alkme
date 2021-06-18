@@ -5,6 +5,7 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
+import { About } from '../containers/about/about';
 import { AdminHome } from '../containers/admin_home/admin_home';
 import { DisplayUsersInfo } from '../containers/display_users_info/display_users_info';
 import { DisplayFeedback } from '../containers/display_feedback/display_feedback';
@@ -16,6 +17,7 @@ import { Landing } from '../containers/landing/landing.js';
 import { Register } from '../containers/register/register.js';
 import { Home } from '../containers/home/home.js';
 import Match from '../containers/match/match.js';
+import { MatchResults } from '../containers/match_results/match_results';
 import { MyInfo } from '../containers/my_info/myInfo';
 import { Login } from '../containers/login/login.js';
 import {
@@ -48,6 +50,12 @@ export const App = (props) => {
     <div className="App">
       <Router>
         <Switch>
+          <PrivateRoute
+            path="/match_results"
+            currentUserInfo={state.currentUserInfo}
+          >
+            <MatchResults />
+          </PrivateRoute>
           <PrivateRoute
             path="/feedback"
             currentUserInfo={state.currentUserInfo}
@@ -115,6 +123,9 @@ export const App = (props) => {
           >
             <DisplayWaitingMeetings />
           </AdminPrivateRoute>
+          <Route path="/about">
+            <About />
+          </Route>
           <Route path="/register">
             <Register
               registerPage={state.registerPage}
