@@ -89,6 +89,7 @@ export const App = (props) => {
             ) : (
               <Home
                 currentUserInfo={state.currentUserInfo}
+                homePage={state.homePage}
                 dispatch={dispatch}
               />
             )}

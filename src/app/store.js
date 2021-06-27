@@ -6,6 +6,7 @@ import {
   registerPageUserInfoReducer,
   registerPageUsernameReducer
 } from '../containers/register/registerSlice'
+import { homePageReducer } from '../containers/home/homeSlice';
 import {loginPageReducer} from '../containers/login/loginSlice'
 import {
   matchPageReducer,
@@ -29,6 +30,7 @@ export const store = createStore(
     registerPageUsername: registerPageUsernameReducer,
     registerPageUserInfo: registerPageUserInfoReducer,
     loginPage: loginPageReducer,
+    homePage: homePageReducer,
     myInfoPage: myInfoPageReducer,
     myInfoSettings: myInfoSettingsReducer,
     feedbackPage: feedbackPageReducer,

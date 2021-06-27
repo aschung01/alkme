@@ -5,14 +5,44 @@ export const jumpToPage = (matchPage) => {
   };
 };
 
-const initialMatchPage = 1;
+export const isMatchEnrollAvailable = (available) => {
+  return {
+    type: 'matchPage/isMatchEnrollAvailable',
+    payload: available,
+  };
+};
 
-export const matchPageReducer = (matchPage = initialMatchPage, action) => {
+export const triggerMatchEnrollWarningAlert = () => {
+  return {
+    type: 'matchPage/triggerMatchEnrollWarningAlert',
+  };
+};
+
+const initialMatchPage = {
+  page: 1,
+  enrollAvailable: true,
+  warningAlert: false,
+};
+
+export const matchPageReducer = (state = initialMatchPage, action) => {
   switch (action.type) {
     case 'matchPage/jumpToPage':
-      return action.payload;
+      return {
+        ...state,
+        page: action.payload,
+      };
+    case 'matchPage/isMatchEnrollAvailable':
+      return {
+        ...state,
+        enrollAvailable: action.payload,
+      };
+    case 'matchPage/triggerMatchEnrollWarningAlert':
+      return {
+        ...state,
+        warningAlert: !state.warningAlert,
+      };
     default:
-      return matchPage;
+      return state;
   }
 };
 
@@ -45,6 +75,19 @@ export const isUserUsername = (isUser) => {
   };
 };
 
+export const isFriendEnrollAvailable = (enrollAvailable) => {
+  return {
+    type: 'matchPageFriendUsername/isFriendEnrollAvailable',
+    payload: enrollAvailable,
+  };
+};
+
+export const toggleFriendEnrollWarningAlert = () => {
+  return {
+    type: 'matchPageFriendUsername/toggleFriendEnrollWarningAlert',
+  }
+}
+
 export const resolveFriendUsernameErrors = () => {
   return {
     type: 'matchPageFriendUsername/resolveFriendUsernameErrors',
@@ -73,6 +116,8 @@ const initialState = {
   notNewError: false,
   genderError: false,
   isUserError: false,
+  friendEnrollError: false,
+  warningAlert: false,
   helperText: '',
   friendUsername: '',
 };
@@ -108,6 +153,16 @@ export const matchPageFriendUsernameReducer = (
         isUserError: action.payload,
         helperText: action.payload ? '본인 닉네임을 추가할 수 없습니다' : '',
       };
+    case 'matchPageFriendUsername/isFriendEnrollAvailable':
+      return {
+        ...state,
+        friendEnrollError: !action.payload,
+      };
+    case 'matchPageFriendUsername/toggleFriendEnrollWarningAlert':
+      return {
+        ...state,
+        warningAlert: !state.warningAlert,
+      }
     case 'matchPageFriendUsername/resolveFriendUsernameErrors':
       return {
         ...state,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
   NavigationButton,
   OptionButton,
@@ -35,14 +35,22 @@ import {
   isUserUsername,
   resolveFriendUsernameErrors,
   toggleSelectAllUniversities,
+  isMatchEnrollAvailable,
+  triggerMatchEnrollWarningAlert,
+  isFriendEnrollAvailable,
+  toggleFriendEnrollWarningAlert,
 } from './matchSlice';
 import './match.css';
 import {
   checkFriendGenderMatch,
   checkFriendUsernameAvailable,
+  getMatchEnrollAvailableList,
+  getEnrollUsersValue,
   updateDbEnrolledMatchLists,
+  checkFriendEnrollAvailable,
 } from '../../firebase/firebaseDb';
 import { ChipsArray } from '../../components/chips_array/chips_array.js';
+import { WarningAlert } from '../../components/alerts/alerts.js';
 
 const matchTypePageTitleText = '나가려는 미팅의\n종류를 선택해주세요';
 const numPersonsPageTitleText = '미팅에 함께\n나갈 사람이 있나요?';
@@ -95,7 +103,7 @@ function Match(props) {
 
 const MatchPageHeader = (props) => {
   const { matchPage, inputMatchInfo, dispatch } = props;
-  switch (matchPage) {
+  switch (matchPage.page) {
     case 1:
       return (
         <Header
@@ -107,21 +115,29 @@ const MatchPageHeader = (props) => {
         />
       );
     case 2:
-      return <Header onClick={() => dispatch(jumpToPage(matchPage - 1))} />;
+      return (
+        <Header onClick={() => dispatch(jumpToPage(matchPage.page - 1))} />
+      );
     case 3:
       if (inputMatchInfo.numPersons === 1)
-        return <Header onClick={() => dispatch(jumpToPage(matchPage - 2))} />;
+        return (
+          <Header onClick={() => dispatch(jumpToPage(matchPage.page - 2))} />
+        );
       else if (inputMatchInfo.numPersons === 2)
-        return <Header onClick={() => dispatch(jumpToPage(matchPage - 1))} />;
+        return (
+          <Header onClick={() => dispatch(jumpToPage(matchPage.page - 1))} />
+        );
       break;
     default:
-      return <Header onClick={() => dispatch(jumpToPage(matchPage - 1))} />;
+      return (
+        <Header onClick={() => dispatch(jumpToPage(matchPage.page - 1))} />
+      );
   }
 };
 
 const MatchPageTitle = (props) => {
   const { matchPage } = props;
-  switch (matchPage) {
+  switch (matchPage.page) {
     case 1:
       return (
         <div className="MatchTitle">
@@ -176,7 +192,7 @@ const MatchPageContent = (props) => {
     inputMatchInfo,
     dispatch,
   } = props;
-  switch (matchPage) {
+  switch (matchPage.page) {
     case 1:
       return (
         <MatchTypePage inputMatchInfo={inputMatchInfo} dispatch={dispatch} />
@@ -211,7 +227,11 @@ const MatchPageContent = (props) => {
       );
     case 6:
       return (
-        <MatchNotifyPage inputMatchInfo={inputMatchInfo} dispatch={dispatch} />
+        <MatchNotifyPage
+          matchPage={matchPage}
+          inputMatchInfo={inputMatchInfo}
+          dispatch={dispatch}
+        />
       );
     default:
       return (
@@ -228,7 +248,9 @@ const MatchPageNavigationButton = (props) => {
     inputMatchInfo,
     dispatch,
   } = props;
-  switch (matchPage) {
+  const history = useHistory();
+
+  switch (matchPage.page) {
     case 1:
       if (inputMatchInfo.matchType === 0)
         return <DisabledNavigationButton buttonText="다음" />;
@@ -236,7 +258,7 @@ const MatchPageNavigationButton = (props) => {
         return (
           <NavigationButton
             buttonText="다음"
-            onClick={() => dispatch(jumpToPage(matchPage + 1))}
+            onClick={() => dispatch(jumpToPage(matchPage.page + 1))}
           />
         );
     case 2:
@@ -248,9 +270,9 @@ const MatchPageNavigationButton = (props) => {
             buttonText="다음"
             onClick={() => {
               if (inputMatchInfo.numPersons === 2)
-                dispatch(jumpToPage(matchPage + 1));
+                dispatch(jumpToPage(matchPage.page + 1));
               else if (inputMatchInfo.numPersons === 1)
-                dispatch(jumpToPage(matchPage + 2));
+                dispatch(jumpToPage(matchPage.page + 2));
             }}
           />
         );
@@ -262,7 +284,7 @@ const MatchPageNavigationButton = (props) => {
           <NavigationButton
             buttonText="다음"
             onClick={() => {
-              dispatch(jumpToPage(matchPage + 1));
+              dispatch(jumpToPage(matchPage.page + 1));
             }}
           />
         );
@@ -277,7 +299,7 @@ const MatchPageNavigationButton = (props) => {
           <NavigationButton
             buttonText="다음"
             onClick={() => {
-              dispatch(jumpToPage(matchPage + 1));
+              dispatch(jumpToPage(matchPage.page + 1));
               dispatch(
                 updateInputMatchUniversities(matchConditions.selectedUniversity)
               );
@@ -286,44 +308,55 @@ const MatchPageNavigationButton = (props) => {
           />
         );
     case 5:
-      // if (
-      //   !matchConditions.enableNavigationButton ||
-      //   matchConditions.selectedUniversity.length === 0
-      // )
-      //   return <DisabledNavigationButton buttonText="다음" />;
-      // else
-      return (
-        <NavigationButton
-          buttonText="다음"
-          onClick={() => {
-            dispatch(jumpToPage(matchPage + 1));
-            dispatch(
-              updateInputMatchUniversities(matchConditions.selectedUniversity)
-            );
-            dispatch(updateInputMatchInfoAgeRange(matchConditions.ageRange));
-          }}
-        />
-      );
+      if (inputMatchInfo.availableDates.length === 0)
+        return <DisabledNavigationButton buttonText="다음" />;
+      else
+        return (
+          <NavigationButton
+            buttonText="다음"
+            onClick={() => {
+              dispatch(jumpToPage(matchPage.page + 1));
+            }}
+          />
+        );
     case 6:
       return (
-        <Link to="/home" style={{ textDecoration: 'none' }}>
-          <NavigationButton
-            buttonText="등록하기"
-            onClick={() => {
+        <NavigationButton
+          buttonText="등록하기"
+          onClick={async () => {
+            const usersValue = await getEnrollUsersValue(
+              currentUserInfo.userInfo,
+              inputMatchInfo
+            );
+            const usersEnrollAvailableList = await getMatchEnrollAvailableList(
+              usersValue
+            );
+            const enrollAvailable = usersEnrollAvailableList.every(
+              (val) => val === true
+            );
+            if (enrollAvailable) {
+              history.push('/home');
               dispatch(jumpToPage(1));
               updateDbEnrolledMatchLists(
+                usersValue,
                 currentUserInfo.userInfo,
                 inputMatchInfo
               );
-            }}
-          />
-        </Link>
+            } else {
+              dispatch(isMatchEnrollAvailable(enrollAvailable));
+              dispatch(triggerMatchEnrollWarningAlert());
+              setTimeout(() => {
+                dispatch(triggerMatchEnrollWarningAlert());
+              }, 2000);
+            }
+          }}
+        />
       );
     default:
       return (
         <NavigationButton
           buttonText="다음"
-          onClick={() => dispatch(jumpToPage(matchPage + 1))}
+          onClick={() => dispatch(jumpToPage(matchPage.page + 1))}
         />
       );
   }
@@ -454,31 +487,48 @@ const FriendUsernamePage = (props) => {
             const available = await checkFriendUsernameAvailable(
               matchPageFriendUsername.friendUsername
             );
-            const newFriend = inputMatchInfo.friendUsernameData.every(
-              (e) => e.label !== matchPageFriendUsername.friendUsername
-            );
-            const friendGenderMatch = await checkFriendGenderMatch(
-              matchPageFriendUsername.friendUsername,
-              currentUserInfo.userInfo.gender
-            );
-            const isUser =
-              matchPageFriendUsername.friendUsername ===
-              currentUserInfo.userInfo.username;
             if (!available) dispatch(friendUsernameAvailable(available));
-            else if (!newFriend) dispatch(newFriendUsername(newFriend));
-            else if (!friendGenderMatch)
-              dispatch(doesFriendGenderMatch(friendGenderMatch));
-            else if (isUser) dispatch(isUserUsername(isUser));
             else {
-              dispatch(resolveFriendUsernameErrors());
-              dispatch(updateMatchPageFriendUsername(''));
-              dispatch(
-                updateInputFriendUsernameData(
-                  matchPageFriendUsername.friendUsername
-                )
+              const newFriend = inputMatchInfo.friendUsernameData.every(
+                (e) => e.label !== matchPageFriendUsername.friendUsername
               );
+              const friendGenderMatch = await checkFriendGenderMatch(
+                matchPageFriendUsername.friendUsername,
+                currentUserInfo.userInfo.gender
+              );
+              const isUser =
+                matchPageFriendUsername.friendUsername ===
+                currentUserInfo.userInfo.username;
+              const friendEnrollAvailable = await checkFriendEnrollAvailable(
+                matchPageFriendUsername.friendUsername
+              );
+              if (!newFriend) dispatch(newFriendUsername(newFriend));
+              else if (!friendGenderMatch)
+                dispatch(doesFriendGenderMatch(friendGenderMatch));
+              else if (isUser) dispatch(isUserUsername(isUser));
+              else if (!friendEnrollAvailable) {
+                dispatch(isFriendEnrollAvailable(friendEnrollAvailable));
+                dispatch(toggleFriendEnrollWarningAlert());
+                setTimeout(() => {
+                  dispatch(toggleFriendEnrollWarningAlert());
+                }, 2000);
+              } else {
+                dispatch(resolveFriendUsernameErrors());
+                dispatch(updateMatchPageFriendUsername(''));
+                dispatch(
+                  updateInputFriendUsernameData(
+                    matchPageFriendUsername.friendUsername
+                  )
+                );
+              }
             }
           }}
+        />
+      </div>
+      <div className="FriendEnrollWarningAlert">
+        <WarningAlert
+          open={matchPageFriendUsername.warningAlert}
+          alertText={`${matchPageFriendUsername.friendUsername}님은 현재 매칭 대기중인 미팅이 있습니다!`}
         />
       </div>
     </div>
@@ -567,10 +617,18 @@ const MatchAvailableDatesPage = (props) => {
 };
 
 const MatchNotifyPage = (props) => {
+  const { matchPage } = props;
+
   return (
     <div className="MatchPage6">
       <div className="MatchNotification">
         <p>이러쿵 저러쿵</p>
+      </div>
+      <div className="MatchEnrollWarningAlert">
+        <WarningAlert
+          open={matchPage.warningAlert}
+          alertText="현재 매칭 대기중인 미팅이 있습니다!"
+        />
       </div>
     </div>
   );

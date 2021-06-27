@@ -90,7 +90,7 @@ const getUidByUsername = (username) =>
     .once('value')
     .then((snapshot) => Object.keys(snapshot.val())[0]);
 
-export const updateDbEnrolledMatchLists = async (userInfo, matchInfo) => {
+export const getEnrollUsersValue = async (userInfo, matchInfo) => {
   const usersValue = [
     { uid: auth.currentUser.uid, username: userInfo.username },
   ];
@@ -105,6 +105,14 @@ export const updateDbEnrolledMatchLists = async (userInfo, matchInfo) => {
     });
   }
 
+  return usersValue;
+};
+
+export const updateDbEnrolledMatchLists = async (
+  usersValue,
+  userInfo,
+  matchInfo
+) => {
   const userEnrolledMatchData = {
     matchType: matchInfo.matchType,
     users: usersValue,
@@ -130,6 +138,38 @@ export const updateDbEnrolledMatchLists = async (userInfo, matchInfo) => {
   db.ref('usersEnrolledMatchList').update(usersEnrolledMatchListUpdates);
   db.ref(enrolledMatchList).update(enrolledMatchListUpdates);
 };
+
+export const getMatchEnrollAvailableList = async (usersValue) => {
+  const usersEnrollAvailableList = [];
+  const length = usersValue.length;
+
+  for (let i = 0; i < length; i++) {
+    const valAvailable = await db
+      .ref('usersEnrolledMatchList/' + usersValue[i].uid)
+      .once('value')
+      .then((snapshot) => snapshot.val() === null);
+    usersEnrollAvailableList.push(valAvailable);
+  }
+
+  return usersEnrollAvailableList;
+};
+
+export const checkFriendEnrollAvailable = async (username) => {
+  const uid = await getUidByUsername(username);
+  const friendEnrollAvailable = await db
+    .ref('usersEnrolledMatchList/' + uid)
+    .once('value')
+    .then((snapshot) => {
+      return snapshot.val() === null;
+    });
+  return friendEnrollAvailable;
+};
+
+export const checkUserMatchEnrollAvailable = () =>
+  db
+    .ref('usersEnrolledMatchList/' + auth.currentUser.uid)
+    .once('value')
+    .then((snapshot) => snapshot.val() === null);
 
 export const updateDbInputFeedback = (feedback) => {
   const uid = auth.currentUser.uid;

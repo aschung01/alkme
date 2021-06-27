@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {
   NavigationButton,
   DisabledNavigationButton,
@@ -51,24 +51,54 @@ const titleTextUserInfo = '본격적으로 시작하기 전\n본인 정보를 �
 const titleHelperTextUserInfo = '맞춤 서비스를 위한 최소한의 정보만 받아요';
 
 export const Register = (props) => {
-  const { registerPage, dispatch } = props;
+  const {
+    registerPage,
+    registerPageEmail,
+    registerPagePassword,
+    registerPageUsername,
+    registerPageUserInfo,
+    dispatch,
+  } = props;
 
   return (
     <div className="Register">
       <div className="RegisterContainer">
         {registerPage === 1 ? (
-          <Header transparent={true} onClick={() => dispatch(jumpToPage(1))} backRoute="/" />
+          <Header
+            transparent={true}
+            onClick={() => dispatch(jumpToPage(1))}
+            backRoute="/"
+          />
         ) : (
-          <Header transparent={true} onClick={() => dispatch(jumpToPage(registerPage - 1))} />
+          <Header
+            transparent={true}
+            onClick={() => dispatch(jumpToPage(registerPage - 1))}
+          />
         )}
-        {getRegisterPage(props)}
+        <RegisterPageContent
+          registerPage={registerPage}
+          registerPageEmail={registerPageEmail}
+          registerPagePassword={registerPagePassword}
+          registerPageUsername={registerPageUsername}
+          registerPageUserInfo={registerPageUserInfo}
+          dispatch={dispatch}
+        />
       </div>
-      <div className="NavigationButton">{getNavigationButton(props)}</div>
+      <div className="RegisterPageNavigationButton">
+        <RegisterPageNavigationButton
+          registerPage={registerPage}
+          registerPageEmail={registerPageEmail}
+          registerPagePassword={registerPagePassword}
+          registerPageUsername={registerPageUsername}
+          registerPageUserInfo={registerPageUserInfo}
+          dispatch={dispatch}
+        />
+      </div>
     </div>
   );
 };
 
-const getRegisterPage = (props) => {
+const RegisterPageContent = (props) => {
   const {
     registerPage,
     registerPageEmail,
@@ -116,7 +146,7 @@ const getRegisterPage = (props) => {
   }
 };
 
-const getNavigationButton = (props) => {
+const RegisterPageNavigationButton = (props) => {
   const {
     registerPage,
     registerPageEmail,
@@ -125,6 +155,8 @@ const getNavigationButton = (props) => {
     registerPageUserInfo,
     dispatch,
   } = props;
+  const history = useHistory();
+
   switch (registerPage) {
     case 1:
       if (
@@ -224,19 +256,18 @@ const getNavigationButton = (props) => {
         return <DisabledNavigationButton buttonText="시작하기" />;
       else
         return (
-          <Link to="/home" style={{ textDecoration: 'none' }}>
-            <NavigationButton
-              buttonText="시작하기"
-              onClick={() => {
-                dispatch(jumpToPage(1));
-                registerUser(
-                  registerPageUserInfo.email,
-                  registerPageUserInfo.password,
-                  registerPageUserInfo
-                );
-              }}
-            />
-          </Link>
+          <NavigationButton
+            buttonText="시작하기"
+            onClick={() => {
+              dispatch(jumpToPage(1));
+              registerUser(
+                registerPageUserInfo.email,
+                registerPageUserInfo.password,
+                registerPageUserInfo
+              );
+              history.push('/home');
+            }}
+          />
         );
     default:
       return (
@@ -265,7 +296,9 @@ const RegisterEmailPage = (props) => {
           }}
           emailAddress={registerPageEmail.userEmailAddress}
           helperText={registerPageEmail.helperText}
-          error={registerPageEmail.regexError || registerPageEmail.inavailableError}
+          error={
+            registerPageEmail.regexError || registerPageEmail.inavailableError
+          }
           label="이메일"
         />
       </div>
@@ -326,7 +359,10 @@ const RegisterUsernamePage = (props) => {
             dispatch(updateUserInfoUsername(e.target.value));
             dispatch(checkUsernameLength(e.target.value));
           }}
-          error={registerPageUsername.lengthError || registerPageUsername.inavailableError}
+          error={
+            registerPageUsername.lengthError ||
+            registerPageUsername.inavailableError
+          }
           label="닉네임"
           helperText={registerPageUsername.helperText}
         />
@@ -364,12 +400,14 @@ const RegisterPageUserInfo = (props) => {
         </div>
         <div className="SelectAge">
           <p>나이</p>
-          <InputSlider
-            min={20}
-            max={29}
-            value={registerPageUserInfo.age}
-            onChange={(e, value) => dispatch(updateUserAge(value))}
-          />
+          <div className="SelectAgeInputSlider">
+            <InputSlider
+              min={20}
+              max={29}
+              value={registerPageUserInfo.age}
+              onChange={(e, value) => dispatch(updateUserAge(value))}
+            />
+          </div>
         </div>
       </div>
     </div>

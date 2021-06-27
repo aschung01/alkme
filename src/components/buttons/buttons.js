@@ -203,11 +203,12 @@ export const TextButton = (props) => {
 };
 
 export const RouteButton = (props) => {
-  const { buttonText } = props;
+  const { buttonText, onClick } = props;
   const classes = routeButtonStyles(props);
   const { root: buttonClass, ...rippleClasses } = classes;
   return (
     <Button
+      onClick={onClick}
       className={classes.root}
       TouchRippleProps={{ classes: rippleClasses }}
     >
