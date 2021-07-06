@@ -1,0 +1,73 @@
+.DisplayWaitingMeetings {
+  height: 100vh;
+  position: relative;
+  background-color: #fffaee;
+  overflow: hidden;
+}
+
+.DisplayWaitingMeetingsContent {
+  z-index: 100;
+  position: absolute;
+  height: 92vh;
+  left: 0;
+  right: 0;
+  top: 8vh;
+}
+
+.WaitingMeetingsListWrapper {
+  margin: 5vw;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.WaitingMeetingsList {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.WaitingMeetingsListLabel {
+  margin-left: 4vw;
+  font-size: 16px;
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+.WaitingMeetingsListItem {
+  box-sizing: border-box;
+  margin: 1vw;
+  padding: 2vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #aeaeae;
+  border-radius: 20px;
+  flex-wrap: wrap;
+  width: 40vw;
+}
+
+.WaitingMeetingsDataUsersList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.WaitingMeetingsDataUser {
+ margin: 0 3px;
+}
+
+.MatchActionButton {
+  position: fixed;
+  bottom: 2vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

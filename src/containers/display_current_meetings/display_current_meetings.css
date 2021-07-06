@@ -1,0 +1,84 @@
+.DisplayCurrentMeetings {
+  height: 100vh;
+  position: relative;
+  background-color: #fffaee;
+  overflow: hidden;
+}
+
+.DisplayCurrentMeetingsContent {
+  z-index: 100;
+  position: absolute;
+  height: 100vh;
+  left: 0;
+  right: 0;
+  top: 8vh;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+
+.CurrentMeetingsListWrapper {
+  box-sizing: border-box;
+  margin: 5vw;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.CurrentMeetingsList {
+  margin: 5px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  flex-direction: column;
+  align-self: center;
+}
+
+.CurrentMeetingsListLabel {
+  margin-left: 4vw;
+  font-size: 16px;
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+.CurrentMeetingsListItem {
+  box-sizing: border-box;
+  margin: 1vw;
+  padding: 2vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid#aeaeae;
+  border-radius: 20px;
+  flex-wrap: wrap;
+  width: 85vw;
+}
+
+.CurrentMeetingsData {
+  margin-bottom: 5px;
+}
+
+.CurrentMeetingsDataUsersList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.CurrentMeetingsDataUser {
+  margin: 0 3px;
+  color: black;
+}
+
+.CurrentMeetingsDataDateList {
+  list-style: none;
+  padding: 0 0 0 10px;
+  margin: 0;
+}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   NavigationButton,
@@ -39,6 +39,8 @@ import {
   triggerMatchEnrollWarningAlert,
   isFriendEnrollAvailable,
   toggleFriendEnrollWarningAlert,
+  resetInputMatchConditions,
+  resetMatchPageFriendUsername,
 } from './matchSlice';
 import './match.css';
 import {
@@ -51,6 +53,7 @@ import {
 } from '../../firebase/firebaseDb';
 import { ChipsArray } from '../../components/chips_array/chips_array.js';
 import { WarningAlert } from '../../components/alerts/alerts.js';
+import { AlertDialog } from '../../components/dialogs/dialogs.js';
 
 const matchTypePageTitleText = '나가려는 미팅의\n종류를 선택해주세요';
 const numPersonsPageTitleText = '미팅에 함께\n나갈 사람이 있나요?';
@@ -277,7 +280,10 @@ const MatchPageNavigationButton = (props) => {
           />
         );
     case 3:
-      if (inputMatchInfo.friendUsernameData.length === 0)
+      if (
+        inputMatchInfo.friendUsernameData.length !==
+        inputMatchInfo.matchType - 1
+      )
         return <DisabledNavigationButton buttonText="다음" />;
       else
         return (
@@ -342,6 +348,9 @@ const MatchPageNavigationButton = (props) => {
                 currentUserInfo.userInfo,
                 inputMatchInfo
               );
+              dispatch(resetMatchPageFriendUsername());
+              dispatch(resetInputMatchConditions());
+              dispatch(resetInputMatchInfo());
             } else {
               dispatch(isMatchEnrollAvailable(enrollAvailable));
               dispatch(triggerMatchEnrollWarningAlert());
@@ -408,20 +417,30 @@ const MatchTypePage = (props) => {
 
 const WithFriendPage = (props) => {
   const { inputMatchInfo, dispatch } = props;
+  const [warning, setWarning] = useState(false);
   return (
     <div className="MatchPage2">
       <div className="SelectNumPersons">
-        {inputMatchInfo.numPersons !== 1 ? (
+        {
+          //inputMatchInfo.numPersons !== 1 ? (
           <OptionButton
             buttonText="혼자 나가요"
-            onClick={() => dispatch(updateInputNumPersons(1))}
+            onClick={() => {
+              setWarning(true);
+              setTimeout(() => {
+                setWarning(false);
+              }, 5000);
+              // dispatch(updateInputNumPersons(1));
+            }}
           />
-        ) : (
-          <SelectedOptionButton
-            buttonText="혼자 나가요"
-            onClick={() => dispatch(updateInputNumPersons(0))}
-          />
-        )}
+          // )
+          // : (
+          //   <SelectedOptionButton
+          //     buttonText="혼자 나가요"
+          //     onClick={() => dispatch(updateInputNumPersons(0))}
+          //   />
+          // )
+        }
         {inputMatchInfo.numPersons !== 2 ? (
           <OptionButton
             buttonText="친구랑 같이 나가요"
@@ -434,6 +453,12 @@ const WithFriendPage = (props) => {
           />
         )}
       </div>
+      <AlertDialog
+        open={warning}
+        onClose={() => setWarning(false)}
+        title="앗! 현재 개발 중인 기능입니다"
+        content="지금은 미팅을 신청하려면 함께 나갈 인원(동일 성별)을 모두 구하셔야 해요. 빠른 시일 내로 업데이트로 찾아뵐게요!"
+      />
     </div>
   );
 };
@@ -450,7 +475,7 @@ const FriendUsernamePage = (props) => {
           {inputMatchInfo.matchType}대{inputMatchInfo.matchType} 미팅을
           선택하셨어요.
         </p>
-        <p>최대 {maxFriendNum}명의 친구를 추가할 수 있어요</p>
+        <p>함께 나갈 {maxFriendNum}명의 친구를 추가해 주세요</p>
       </div>
       <ChipsArray
         array={inputMatchInfo.friendUsernameData}

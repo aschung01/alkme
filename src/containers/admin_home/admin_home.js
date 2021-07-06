@@ -4,6 +4,7 @@ import { RouteButton } from '../../components/buttons/buttons.js';
 import { AdminHomeHeader } from '../../components/header/header.js';
 import './admin_home.css';
 import { logout } from '../../firebase/firebaseAuth';
+import { BackgroundDots } from '../../components/background_dots/background_dots.js';
 
 export const AdminHome = (props) => {
   const { currentUserInfo } = props;
@@ -15,10 +16,7 @@ export const AdminHome = (props) => {
 
   return (
     <div className="AdminHome">
-      <span className="Dot1" />
-      <span className="Dot2" />
-      <span className="Dot3" />
-      <span className="Dot4" />
+      <BackgroundDots />
       <div className="AdminHomeView">
         <div className="AdminHomeHeader">
           <AdminHomeHeader
@@ -50,7 +48,7 @@ export const AdminHome = (props) => {
             <RouteButton buttonText="완료된 미팅" />
           </Link>
           <Link to="/display_waiting_meetings" className="RouteButtonLink">
-            <RouteButton buttonText="대기중인 미팅" />
+            <RouteButton buttonText="대기중인 미팅" background="linear-gradient(to right bottom, rgba(255, 250, 238, 0.8), rgba(239, 81, 95, 0.8))"/>
           </Link>
         </div>
       </div>

@@ -110,7 +110,10 @@ export const App = (props) => {
             path="/display_current_meetings"
             currentUserInfo={state.currentUserInfo}
           >
-            <DisplayCurrentMeetings />
+            <DisplayCurrentMeetings
+              displayCurrentMeetings={state.displayCurrentMeetings}
+              dispatch={dispatch}
+            />
           </AdminPrivateRoute>
           <AdminPrivateRoute
             path="/display_previous_meetings"
@@ -122,7 +125,10 @@ export const App = (props) => {
             path="/display_waiting_meetings"
             currentUserInfo={state.currentUserInfo}
           >
-            <DisplayWaitingMeetings />
+            <DisplayWaitingMeetings
+              displayWaitingMeetings={state.displayWaitingMeetings}
+              dispatch={dispatch}
+            />
           </AdminPrivateRoute>
           <Route path="/about">
             <About />

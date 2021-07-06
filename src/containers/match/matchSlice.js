@@ -85,8 +85,8 @@ export const isFriendEnrollAvailable = (enrollAvailable) => {
 export const toggleFriendEnrollWarningAlert = () => {
   return {
     type: 'matchPageFriendUsername/toggleFriendEnrollWarningAlert',
-  }
-}
+  };
+};
 
 export const resolveFriendUsernameErrors = () => {
   return {
@@ -109,6 +109,12 @@ export const updateMatchPageFriendUsername = (username) => {
     payload: username,
   };
 };
+
+export const resetMatchPageFriendUsername = () => {
+  return {
+    type: 'matchPageFriendUsername/resetMatchPageFriendUsername',
+  }
+}
 
 const initialState = {
   lengthError: false,
@@ -162,7 +168,7 @@ export const matchPageFriendUsernameReducer = (
       return {
         ...state,
         warningAlert: !state.warningAlert,
-      }
+      };
     case 'matchPageFriendUsername/resolveFriendUsernameErrors':
       return {
         ...state,
@@ -182,6 +188,8 @@ export const matchPageFriendUsernameReducer = (
         ...state,
         friendUsername: action.payload,
       };
+    case 'matchPageFriendUsernam/resetMatchPageFriendUsername':
+      return initialState;
     default:
       return state;
   }
@@ -209,6 +217,12 @@ export const updateAgeRange = (ageRange) => {
 
 export const enableNavigationButton = () => {
   return { type: 'inputMatchConditions/enableNavigationButton' };
+};
+
+export const resetInputMatchConditions = () => {
+  return {
+    type: 'inputMatchConditions/resetInputMatchConditions',
+  };
 };
 
 const initialMatchConditions = {
@@ -269,6 +283,8 @@ export const inputMatchConditionsReducer = (
         ...matchConditions,
         enableNavigationButton: true,
       };
+    case 'inputMatchConditions/resetInputMatchConditions':
+      return initialMatchConditions;
     default:
       return matchConditions;
   }

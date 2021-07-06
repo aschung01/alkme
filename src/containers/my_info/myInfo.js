@@ -62,6 +62,7 @@ import {
   updateDbUserUniversity,
 } from '../../firebase/firebaseDb';
 import { InputSlider } from '../../components/sliders/sliders';
+import { BackgroundDots } from '../../components/background_dots/background_dots';
 
 export const MyInfo = (props) => {
   const { myInfoPage, myInfoSettings, currentUserInfo, dispatch } = props;
@@ -76,10 +77,7 @@ export const MyInfo = (props) => {
 
   return (
     <div className="MyInfo">
-      <span className="MyInfoDot1" />
-      <span className="MyInfoDot2" />
-      <span className="MyInfoDot3" />
-      <span className="MyInfoDot4" />
+      <BackgroundDots />
       <div className="MyInfoHeader">
         <Header
           transparent={headerTransparent}

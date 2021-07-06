@@ -9,6 +9,9 @@ export const DisplayFeedback = (props) => {
         backRoute="/home"
         titleText="피드백 확인"
       />
+      <div className="FeedbackList">
+        
+      </div>
     </div>
   )
 }

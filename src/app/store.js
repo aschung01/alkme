@@ -4,10 +4,10 @@ import {
   registerPagePasswordReducer,
   registerPageReducer,
   registerPageUserInfoReducer,
-  registerPageUsernameReducer
-} from '../containers/register/registerSlice'
+  registerPageUsernameReducer,
+} from '../containers/register/registerSlice';
 import { homePageReducer } from '../containers/home/homeSlice';
-import {loginPageReducer} from '../containers/login/loginSlice'
+import { loginPageReducer } from '../containers/login/loginSlice';
 import {
   matchPageReducer,
   matchPageFriendUsernameReducer,
@@ -16,10 +16,12 @@ import {
 } from '../containers/match/matchSlice.js';
 import {
   myInfoPageReducer,
-  myInfoSettingsReducer
-} from '../containers/my_info/myInfoSlice'
+  myInfoSettingsReducer,
+} from '../containers/my_info/myInfoSlice';
 import { currentUserInfoReducer } from '../firebase/firebaseAuth';
 import { feedbackPageReducer } from '../containers/feedback/feedbackSlice';
+import { displayWaitingMeetingsReducer } from '../containers/display_waiting_meetings/display_waiting_meetings_Slice';
+import { displayCurrentMeetingsReducer } from '../containers/display_current_meetings/display_current_meetings_Slice';
 
 export const store = createStore(
   combineReducers({
@@ -38,5 +40,7 @@ export const store = createStore(
     matchPageFriendUsername: matchPageFriendUsernameReducer,
     matchConditions: inputMatchConditionsReducer,
     inputMatchInfo: inputMatchInfoReducer,
+    displayWaitingMeetings: displayWaitingMeetingsReducer,
+    displayCurrentMeetings: displayCurrentMeetingsReducer,
   })
 );

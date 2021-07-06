@@ -35,9 +35,12 @@ const textButtonStyles = makeStyles({
 const routeButtonStyles = makeStyles({
   root: {
     '&:focus': {
-      backgroundColor: (props) => props.background,
+      background: (props) => props.background,
     },
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    background: (props) =>
+      props.background !== undefined
+        ? props.background
+        : 'rgba(255, 255, 255, 0.7)',
     border: '1px solid gray',
     borderRadius: 10,
     color: 'black',
@@ -76,6 +79,26 @@ const disabledNavigationButtonStyles = makeStyles({
     border: 0,
     borderRadius: 5,
     color: 'white',
+    height: '9vh',
+    width: '80vw',
+  },
+});
+
+const actionButtonStyles = makeStyles({
+  root: {
+    '&:focus': {
+      background:
+        'linear-gradient(to top right, rgba(255, 250, 2538, 0.9), rgba(239, 81, 95, 0.9))',
+    },
+    '&:hover': {
+      background:
+        'linear-gradient(to top right, rgba(255, 250, 238, 0.9), rgba(239, 81, 95, 0.9))',
+    },
+    background:
+      'linear-gradient(to top right, rgba(255, 250, 238, 0.9), rgba(239, 81, 95, 0.9))',
+    border: 0,
+    borderRadius: 5,
+    color: 'black',
     height: '9vh',
     width: '80vw',
   },
@@ -148,8 +171,8 @@ const addButtonStyles = makeStyles({
     padding: '0px',
     '&:disabled': {
       backgroundColor: '#E1E1E1',
-      color: 'white'
-    }
+      color: 'white',
+    },
   },
 });
 
@@ -241,6 +264,16 @@ export const DisabledNavigationButton = (props) => {
   );
 };
 
+export const ActionButton = (props) => {
+  const { buttonText, onClick } = props;
+  const classes = actionButtonStyles();
+  return (
+    <Button className={classes.root} onClick={onClick}>
+      <span>{buttonText}</span>
+    </Button>
+  );
+};
+
 export const OptionButton = (props) => {
   const { buttonText, onClick } = props;
   const classes = optionButtonStyles();
@@ -286,7 +319,7 @@ export const AddButton = (props) => {
       className={classes.root}
       onClick={onClick}
       disabled={!isActivated}
-      startIcon={<AddCircleRoundedIcon/>}
+      startIcon={<AddCircleRoundedIcon />}
     >
       <span>추가</span>
     </Button>

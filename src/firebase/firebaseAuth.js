@@ -1,4 +1,4 @@
-import { auth, emailCredential } from './initFirebase';
+import { auth, authPersistence, emailCredential } from './initFirebase';
 import {
   registerUserInfo,
   updateDbUserEmail,
@@ -8,7 +8,9 @@ import {
 export const user = auth.currentUser;
 
 export const onAuthStateChanged = (func) => {
-  auth.onAuthStateChanged(func);
+  auth
+    .setPersistence(authPersistence.LOCAL)
+    .then(() => auth.onAuthStateChanged(func));
 };
 
 export const registerUser = (email, password, userInfo) =>
@@ -29,11 +31,8 @@ export const registerUser = (email, password, userInfo) =>
 
 export const loginUser = (email, password) =>
   auth
-    .signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      // Signed in
-      return true;
-    })
+    .setPersistence(authPersistence.LOCAL)
+    .then(() => auth.signInWithEmailAndPassword(email, password))
     .catch((error) => {
       var errorCode = error.code;
       var errorMessage = error.message;
