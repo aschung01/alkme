@@ -102,13 +102,7 @@ const CurrentMeetingsList = (props) => {
                 </div>
                 <div className="CurrentMeetingsData">
                   <span>날짜: </span>
-                  <ul className="CurrentMeetingsDataDateList">
-                    {matchData.dates.map((date, index) => (
-                      <li key={index} className="CurrentMeetingsDataDate">
-                        {date}
-                      </li>
-                    ))}
-                  </ul>
+                    <span>{matchData.date}</span>
                 </div>
               </div>
             );

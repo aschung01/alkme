@@ -4,8 +4,15 @@ export const toggleUserMatchEnrollAlert = () => {
   };
 };
 
+export const toggleUserMatchEnrollSuccessAlert = () => {
+  return {
+    type: 'homePage/toggleUserMatchEnrollSuccessAlert',
+  };
+};
+
 const initialState = {
   matchEnrollAlert: false,
+  matchEnrollSuccessAlert: false,
 };
 
 export const homePageReducer = (state = initialState, action) => {
@@ -15,6 +22,11 @@ export const homePageReducer = (state = initialState, action) => {
         ...state,
         matchEnrollAlert: !state.matchEnrollAlert,
       };
+    case 'homePage/toggleUserMatchEnrollSuccessAlert':
+      return {
+        ...state,
+        matchEnrollSuccessAlert: !state.matchEnrollSuccessAlert,
+      }
     default:
       return state;
   }

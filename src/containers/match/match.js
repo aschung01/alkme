@@ -54,6 +54,7 @@ import {
 import { ChipsArray } from '../../components/chips_array/chips_array.js';
 import { WarningAlert } from '../../components/alerts/alerts.js';
 import { AlertDialog } from '../../components/dialogs/dialogs.js';
+import { toggleUserMatchEnrollSuccessAlert } from '../home/homeSlice.js';
 
 const matchTypePageTitleText = '나가려는 미팅의\n종류를 선택해주세요';
 const numPersonsPageTitleText = '미팅에 함께\n나갈 사람이 있나요?';
@@ -348,6 +349,10 @@ const MatchPageNavigationButton = (props) => {
                 currentUserInfo.userInfo,
                 inputMatchInfo
               );
+              dispatch(toggleUserMatchEnrollSuccessAlert());
+              setTimeout(() => {
+                dispatch(toggleUserMatchEnrollSuccessAlert());
+              }, 2000);
               dispatch(resetMatchPageFriendUsername());
               dispatch(resetInputMatchConditions());
               dispatch(resetInputMatchInfo());

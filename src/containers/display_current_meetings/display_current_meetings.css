@@ -1,14 +1,14 @@
 .DisplayCurrentMeetings {
   height: 100vh;
   position: relative;
-  background-color: #fffaee;
+  background-color: #fcfafa;
   overflow: hidden;
 }
 
 .DisplayCurrentMeetingsContent {
   z-index: 100;
   position: absolute;
-  height: 100vh;
+  height: 92vh;
   left: 0;
   right: 0;
   top: 8vh;
@@ -75,10 +75,4 @@
 .CurrentMeetingsDataUser {
   margin: 0 3px;
   color: black;
-}
-
-.CurrentMeetingsDataDateList {
-  list-style: none;
-  padding: 0 0 0 10px;
-  margin: 0;
 }

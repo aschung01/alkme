@@ -188,7 +188,7 @@ export const matchPageFriendUsernameReducer = (
         ...state,
         friendUsername: action.payload,
       };
-    case 'matchPageFriendUsernam/resetMatchPageFriendUsername':
+    case 'matchPageFriendUsername/resetMatchPageFriendUsername':
       return initialState;
     default:
       return state;

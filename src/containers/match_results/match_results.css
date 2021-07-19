@@ -1,0 +1,66 @@
+.MatchResults {
+  height: 100vh;
+  position: relative;
+  background-color: #fcfafa;
+  overflow: hidden;
+}
+
+.MatchResultsHeader {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 100;
+}
+
+.MatchResultsContent {
+  z-index: 100;
+  position: absolute;
+  height: 100vh;
+  left: 0;
+  right: 0;
+  top: 8vh;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+
+.MatchResultBox {
+  box-sizing: border-box;
+  margin: 1vw;
+  padding: 2vw;
+  width: 90vw;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #aeaeae;
+  border-radius: 20px;
+  flex-wrap: wrap;
+}
+
+.MatchResultBoxLabel {
+  margin-left: 4vw;
+  font-size: 16px;
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+.MatchResultBoxData {
+  margin-bottom: 5px;
+}
+
+.MatchResultBoxDataUsersList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.MatchResultBoxDataUser {
+  margin: 0 3px;
+  color: black;
+}

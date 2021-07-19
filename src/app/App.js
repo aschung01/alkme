@@ -54,7 +54,7 @@ export const App = (props) => {
             path="/match_results"
             currentUserInfo={state.currentUserInfo}
           >
-            <MatchResults />
+            <MatchResults matchResults={state.matchResults} dispatch={dispatch}/>
           </PrivateRoute>
           <PrivateRoute
             path="/feedback"

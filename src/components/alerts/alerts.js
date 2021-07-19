@@ -10,12 +10,12 @@ const useStyles = makeStyles({
 });
 
 export const SuccessAlert = (props) => {
-  const {open} = props;
+  const {open, text} = props;
 
   return (
     <Snackbar open={open} autoHideDuration = {3000}>
       <Alert variant="filled" severity="success">
-        성공적으로 전송되었습니다!
+        {text}
       </Alert>
     </Snackbar>
   );

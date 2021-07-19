@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { SuccessAlert } from '../../components/alerts/alerts';
 import { RouteButton } from '../../components/buttons/buttons.js';
 import { HomeHeader } from '../../components/header/header.js';
 import './home.css';
@@ -7,12 +8,14 @@ import { logout } from '../../firebase/firebaseAuth';
 import { checkUserMatchEnrollAvailable } from '../../firebase/firebaseDb.js';
 import { toggleUserMatchEnrollAlert } from './homeSlice.js';
 import { AlertDialog } from '../../components/dialogs/dialogs.js';
+import { BackgroundDots } from '../../components/background_dots/background_dots.js';
 
 export const Home = (props) => {
   const { currentUserInfo, homePage, dispatch } = props;
   const homeTitleText = `${currentUserInfo.userInfo.username}님 환영합니다!`;
   const matchEnrollAlertTitle = '현재 매칭 대기중인 미팅이 있습니다';
-  const matchEnrollAlertContent = '정확한 서비스를 제공하기 위해, 신청된 미팅의 매칭이 완료되기 전에는 신규 미팅의 신청을 제한하고 있습니다.\n매칭 대기중인 미팅 정보를 보기 위해서는 <내 정보> 페이지를 확인해 주세요';
+  const matchEnrollAlertContent =
+    '정확한 서비스를 제공하기 위해, 신청된 미팅의 매칭이 완료되기 전에는 신규 미팅의 신청을 제한하고 있습니다.\n매칭 대기중인 미팅 정보를 보기 위해서는 <내 정보> 페이지를 확인해 주세요';
   const history = useHistory();
 
   const logoutClick = (e) => {
@@ -21,10 +24,7 @@ export const Home = (props) => {
 
   return (
     <div className="Home">
-      <span className="Dot1" />
-      <span className="Dot2" />
-      <span className="Dot3" />
-      <span className="Dot4" />
+      <BackgroundDots />
       <div className="HomeView">
         <div className="HomeHeader">
           <HomeHeader
@@ -57,6 +57,12 @@ export const Home = (props) => {
             content={matchEnrollAlertContent}
             open={homePage.matchEnrollAlert}
             onClose={() => dispatch(toggleUserMatchEnrollAlert())}
+          />
+        </div>
+        <div className="HomeMatchEnrollSuccessAlert">
+          <SuccessAlert
+            open={homePage.matchEnrollSuccessAlert}
+            text="미팅 신청이 완료되었습니다!"
           />
         </div>
       </div>

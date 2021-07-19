@@ -39,7 +39,7 @@ export const Feedback = (props) => {
             value={feedbackPage.feedback}
           />
           <div className="FeedbackSuccessAlert">
-            <SuccessAlert open={feedbackPage.successAlert} />
+            <SuccessAlert open={feedbackPage.successAlert} text="성공적으로 전송되었습니다!"/>
           </div>
 
           <div className="FeedbackButton">

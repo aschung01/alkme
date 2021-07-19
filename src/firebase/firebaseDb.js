@@ -324,7 +324,7 @@ export const matchEnrolledMatchListDb = async (enrolledMatchList) => {
         );
         if (usersMatch && matchingDates.length > 0) {
           type2MatchList.push({
-            dates: matchingDates,
+            date: matchingDates[0],
             users: data.users.concat(target.users),
             matchType: 2,
           });
@@ -351,7 +351,7 @@ export const matchEnrolledMatchListDb = async (enrolledMatchList) => {
         );
         if (usersMatch && matchingDates.length > 0) {
           type3MatchList.push({
-            dates: matchingDates,
+            date: matchingDates[0],
             users: data.users.concat(target.users),
             matchType: 3,
           });
@@ -378,7 +378,7 @@ export const matchEnrolledMatchListDb = async (enrolledMatchList) => {
         );
         if (usersMatch && matchingDates.length > 0) {
           type4MatchList.push({
-            dates: matchingDates,
+            date: matchingDates[0],
             users: data.users.concat(target.users),
             matchType: 4,
           });
@@ -421,23 +421,32 @@ export const matchEnrolledMatchListDb = async (enrolledMatchList) => {
       .once('value')
       .then((snapshot) => snapshot.val());
     const newUsersEnrolledMatchList = {};
+    const isEqual = (first, second) => {
+      return JSON.stringify(first) === JSON.stringify(second);
+    }
     for (let usersKey in prevUsersEnrolledMatchList) {
       const usersMatchList = prevUsersEnrolledMatchList[usersKey];
-      for (let [matchKey, matchVal] in usersMatchList) {
-        switch (matchVal.matchType) {
+      for (let matchKey in usersMatchList) {
+        switch (usersMatchList[matchKey].matchType) {
           case 2:
-            if (type2MaleList2.contains(matchVal)) {
-              newUsersEnrolledMatchList[usersKey][matchKey] = matchVal;
+            if (type2MaleList2.some(e => isEqual(e, usersMatchList[matchKey]))) {
+              newUsersEnrolledMatchList[usersKey] = {};
+              newUsersEnrolledMatchList[usersKey][matchKey] =
+                usersMatchList[matchKey];
             }
             break;
           case 3:
-            if (type3MaleList3.contains(matchVal)) {
-              newUsersEnrolledMatchList[usersKey][matchKey] = matchVal;
+            if (type3MaleList3.some(e => isEqual(e, usersMatchList[matchKey]))) {
+              newUsersEnrolledMatchList[usersKey] = {};
+              newUsersEnrolledMatchList[usersKey][matchKey] =
+                usersMatchList[matchKey];
             }
             break;
           case 4:
-            if (type4MaleList4.contains(matchVal)) {
-              newUsersEnrolledMatchList[usersKey][matchKey] = matchVal;
+            if (type4MaleList4.some(e => isEqual(e, usersMatchList[matchKey]))) {
+              newUsersEnrolledMatchList[usersKey] = {};
+              newUsersEnrolledMatchList[usersKey][matchKey] =
+                usersMatchList[matchKey];
             }
             break;
           default:
@@ -461,28 +470,56 @@ export const matchEnrolledMatchListDb = async (enrolledMatchList) => {
 };
 
 export const getCurrentMatchListFromDb = async () => {
-  const type2CurrentMatchList = [], type3CurrentMatchList = [], type4CurrentMatchList = [];
+  const type2CurrentMatchList = [],
+    type3CurrentMatchList = [],
+    type4CurrentMatchList = [];
   const admin = await db
     .ref('users/' + auth.currentUser.uid + '/admin')
     .once('value')
     .then((snapshot) => snapshot.val() === true);
   if (admin) {
-    await db.ref('type2CurrentMatchList').once('value').then(snapshot => {
-      for (let key in snapshot.val()) {
-        type2CurrentMatchList.push(snapshot.val()[key]);
-      }
-    })
-    await db.ref('type3CurrentMatchList').once('value').then(snapshot => {
-      for (let key in snapshot.val()) {
-        type3CurrentMatchList.push(snapshot.val()[key]);
-      }
-    })
-    await db.ref('type4CurrentMatchList').once('value').then(snapshot => {
-      for (let key in snapshot.val()) {
-        type4CurrentMatchList.push(snapshot.val()[key]);
-      }
-    })
-    const currentMatchList = [type2CurrentMatchList, type3CurrentMatchList, type4CurrentMatchList];
+    await db
+      .ref('type2CurrentMatchList')
+      .once('value')
+      .then((snapshot) => {
+        for (let key in snapshot.val()) {
+          type2CurrentMatchList.push(snapshot.val()[key]);
+        }
+      });
+    await db
+      .ref('type3CurrentMatchList')
+      .once('value')
+      .then((snapshot) => {
+        for (let key in snapshot.val()) {
+          type3CurrentMatchList.push(snapshot.val()[key]);
+        }
+      });
+    await db
+      .ref('type4CurrentMatchList')
+      .once('value')
+      .then((snapshot) => {
+        for (let key in snapshot.val()) {
+          type4CurrentMatchList.push(snapshot.val()[key]);
+        }
+      });
+    const currentMatchList = [
+      type2CurrentMatchList,
+      type3CurrentMatchList,
+      type4CurrentMatchList,
+    ];
     return currentMatchList;
   }
-}
+};
+
+export const getUserMatchResultsFromDb = async () => {
+  const matchResultsList = [];
+  await db
+    .ref('usersCurrentMatchList/' + auth.currentUser.uid)
+    .once('value')
+    .then((snapshot) => {
+      for (let key in snapshot.val()) {
+        matchResultsList.push(snapshot.val()[key]);
+      }
+    });
+  return matchResultsList;
+};
