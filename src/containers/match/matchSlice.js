@@ -5,14 +5,44 @@ export const jumpToPage = (matchPage) => {
   };
 };
 
-const initialMatchPage = 1;
+export const isMatchEnrollAvailable = (available) => {
+  return {
+    type: 'matchPage/isMatchEnrollAvailable',
+    payload: available,
+  };
+};
 
-export const matchPageReducer = (matchPage = initialMatchPage, action) => {
+export const triggerMatchEnrollWarningAlert = () => {
+  return {
+    type: 'matchPage/triggerMatchEnrollWarningAlert',
+  };
+};
+
+const initialMatchPage = {
+  page: 1,
+  enrollAvailable: true,
+  warningAlert: false,
+};
+
+export const matchPageReducer = (state = initialMatchPage, action) => {
   switch (action.type) {
     case 'matchPage/jumpToPage':
-      return action.payload;
+      return {
+        ...state,
+        page: action.payload,
+      };
+    case 'matchPage/isMatchEnrollAvailable':
+      return {
+        ...state,
+        enrollAvailable: action.payload,
+      };
+    case 'matchPage/triggerMatchEnrollWarningAlert':
+      return {
+        ...state,
+        warningAlert: !state.warningAlert,
+      };
     default:
-      return matchPage;
+      return state;
   }
 };
 
@@ -24,19 +54,78 @@ export const friendUsernameAvailable = (usernameAvailable) => {
   };
 };
 
+export const newFriendUsername = (isNew) => {
+  return {
+    type: 'matchPageFriendUsername/newFriendUsername',
+    payload: isNew,
+  };
+};
+
+export const doesFriendGenderMatch = (genderMatch) => {
+  return {
+    type: 'matchPageFriendUsername/doesFriendGenderMatch',
+    payload: genderMatch,
+  };
+};
+
+export const isUserUsername = (isUser) => {
+  return {
+    type: 'matchPageFriendUsername/isUserUsername',
+    payload: isUser,
+  };
+};
+
+export const isFriendEnrollAvailable = (enrollAvailable) => {
+  return {
+    type: 'matchPageFriendUsername/isFriendEnrollAvailable',
+    payload: enrollAvailable,
+  };
+};
+
+export const toggleFriendEnrollWarningAlert = () => {
+  return {
+    type: 'matchPageFriendUsername/toggleFriendEnrollWarningAlert',
+  };
+};
+
+export const resolveFriendUsernameErrors = () => {
+  return {
+    type: 'matchPageFriendUsername/resolveFriendUsernameErrors',
+  };
+};
+
 export const checkFriendUsernameRegex = (username) => {
   const validUsernameRegex = username.length <= 10;
 
   return {
     type: 'matchPageFriendUsername/checkFriendUsernameRegex',
     payload: validUsernameRegex,
+  };
+};
+
+export const updateMatchPageFriendUsername = (username) => {
+  return {
+    type: 'matchPageFriendUsername/updateMatchPageFriendUsername',
+    payload: username,
+  };
+};
+
+export const resetMatchPageFriendUsername = () => {
+  return {
+    type: 'matchPageFriendUsername/resetMatchPageFriendUsername',
   }
 }
 
 const initialState = {
   lengthError: false,
   inavailableError: false,
+  notNewError: false,
+  genderError: false,
+  isUserError: false,
+  friendEnrollError: false,
+  warningAlert: false,
   helperText: '',
+  friendUsername: '',
 };
 
 export const matchPageFriendUsernameReducer = (
@@ -50,12 +139,57 @@ export const matchPageFriendUsernameReducer = (
         inavailableError: !action.payload,
         helperText: !action.payload ? '존재하지 않는 닉네임입니다' : '',
       };
+    case 'matchPageFriendUsername/newFriendUsername':
+      return {
+        ...state,
+        notNewError: !action.payload,
+        helperText: !action.payload ? '이미 추가한 친구 닉네임입니다' : '',
+      };
+    case 'matchPageFriendUsername/doesFriendGenderMatch':
+      return {
+        ...state,
+        genderError: !action.payload,
+        helperText: !action.payload
+          ? '본인과 같은 성별의 친구만 추가할 수 있어요'
+          : '',
+      };
+    case 'matchPageFriendUsername/isUserUsername':
+      return {
+        ...state,
+        isUserError: action.payload,
+        helperText: action.payload ? '본인 닉네임을 추가할 수 없습니다' : '',
+      };
+    case 'matchPageFriendUsername/isFriendEnrollAvailable':
+      return {
+        ...state,
+        friendEnrollError: !action.payload,
+      };
+    case 'matchPageFriendUsername/toggleFriendEnrollWarningAlert':
+      return {
+        ...state,
+        warningAlert: !state.warningAlert,
+      };
+    case 'matchPageFriendUsername/resolveFriendUsernameErrors':
+      return {
+        ...state,
+        inavailableError: false,
+        notNewError: false,
+        genderError: false,
+        isUserError: false,
+      };
     case 'matchPageFriendUsername/checkFriendUsernameRegex':
       return {
         ...state,
         lengthError: !action.payload,
         helperText: !action.payload ? '닉네임이 너무 길어요' : '',
-      }
+      };
+    case 'matchPageFriendUsername/updateMatchPageFriendUsername':
+      return {
+        ...state,
+        friendUsername: action.payload,
+      };
+    case 'matchPageFriendUsername/resetMatchPageFriendUsername':
+      return initialState;
     default:
       return state;
   }
@@ -68,6 +202,12 @@ export const selectUniversity = (university) => {
   };
 };
 
+export const toggleSelectAllUniversities = () => {
+  return {
+    type: 'inputMatchConditions/toggleSelectAllUniversities',
+  };
+};
+
 export const updateAgeRange = (ageRange) => {
   return {
     type: 'inputMatchConditions/updateAgeRange',
@@ -77,6 +217,12 @@ export const updateAgeRange = (ageRange) => {
 
 export const enableNavigationButton = () => {
   return { type: 'inputMatchConditions/enableNavigationButton' };
+};
+
+export const resetInputMatchConditions = () => {
+  return {
+    type: 'inputMatchConditions/resetInputMatchConditions',
+  };
 };
 
 const initialMatchConditions = {
@@ -114,6 +260,19 @@ export const inputMatchConditionsReducer = (
             (e) => e !== action.payload
           ),
         };
+    case 'inputMatchConditions/toggleSelectAllUniversities':
+      if (matchConditions.unselectedUniversity.length === 0)
+        return {
+          ...matchConditions,
+          selectedUniversity: [],
+          unselectedUniversity: initialMatchConditions.selectedUniversity,
+        };
+      else
+        return {
+          ...matchConditions,
+          selectedUniversity: initialMatchConditions.selectedUniversity,
+          unselectedUniversity: [],
+        };
     case 'inputMatchConditions/updateAgeRange':
       return {
         ...matchConditions,
@@ -123,58 +282,114 @@ export const inputMatchConditionsReducer = (
       return {
         ...matchConditions,
         enableNavigationButton: true,
-      }
+      };
+    case 'inputMatchConditions/resetInputMatchConditions':
+      return initialMatchConditions;
     default:
       return matchConditions;
   }
 };
 
-export const updateNumPersons = (numPersons) => {
+export const updateInputMatchType = (matchType) => {
   return {
-    type: 'matchInfo/updateNumPersons',
+    type: 'inputMatchInfo/updateInputMatchType',
+    payload: matchType,
+  };
+};
+
+export const updateInputNumPersons = (numPersons) => {
+  return {
+    type: 'inputMatchInfo/updateInputNumPersons',
     payload: numPersons,
   };
 };
 
-export const updateFriendUsername = (friendUsername) => {
+export const updateInputFriendUsernameData = (friendUsername) => {
   return {
-    type: 'matchInfo/updateFriendUsername',
+    type: 'inputMatchInfo/updateInputFriendUsernameData',
     payload: friendUsername,
   };
 };
 
-export const updateMatchUniversity = (matchUniversity) => {
+export const deleteInputFriendUsernameData = (key) => {
   return {
-    type: 'matchInfo/updateMatchUniversity',
-    payload: matchUniversity,
+    type: 'inputMatchInfo/deleteInputFriendUsernameData',
+    payload: key,
   };
 };
 
-export const updateMatchInfoAgeRange = (ageRange) => {
+export const updateInputMatchUniversities = (matchUniversities) => {
   return {
-    type: 'matchInfo/updateMatchInfoAgeRange',
+    type: 'inputMatchInfo/updateInputMatchUniversities',
+    payload: matchUniversities,
+  };
+};
+
+export const updateInputMatchInfoAgeRange = (ageRange) => {
+  return {
+    type: 'inputMatchInfo/updateInputMatchInfoAgeRange',
     payload: ageRange,
   };
 };
 
-const initialMatchInfo = {
+export const updateInputAvailableDates = (dates) => {
+  return {
+    type: 'inputMatchInfo/updateInputAvailableDates',
+    payload: dates,
+  };
+};
+
+export const resetInputMatchInfo = () => {
+  return {
+    type: 'inputMatchInfo/resetInputMatchInfo',
+  };
+};
+
+const initialInputMatchInfo = {
+  matchType: 0,
   numPersons: 0,
-  friendUsername: '',
-  matchUniversity: [],
+  availableDates: [],
+  friendUsernameData: [],
+  matchUniversities: [],
   ageRange: [],
 };
 
-export const matchInfoReducer = (matchInfo = initialMatchInfo, action) => {
+export const inputMatchInfoReducer = (
+  inputMatchInfo = initialInputMatchInfo,
+  action
+) => {
   switch (action.type) {
-    case 'matchInfo/updateNumPersons':
-      return { ...matchInfo, numPersons: action.payload };
-    case 'matchInfo/updateFriendUsername':
-      return { ...matchInfo, friendUsername: action.payload };
-    case 'matchInfo/updateMatchUniversity':
-      return { ...matchInfo, matchUniversity: action.payload };
-    case 'matchInfo/updateMatchInfoAgeRange':
-      return { ...matchInfo, ageRange: action.payload };
+    case 'inputMatchInfo/updateInputMatchType':
+      return { ...inputMatchInfo, matchType: action.payload };
+    case 'inputMatchInfo/updateInputNumPersons':
+      return { ...inputMatchInfo, numPersons: action.payload };
+    case 'inputMatchInfo/updateInputFriendUsernameData':
+      return {
+        ...inputMatchInfo,
+        friendUsernameData: [
+          ...inputMatchInfo.friendUsernameData,
+          {
+            key: inputMatchInfo.friendUsernameData.length,
+            label: action.payload,
+          },
+        ],
+      };
+    case 'inputMatchInfo/deleteInputFriendUsernameData':
+      return {
+        ...inputMatchInfo,
+        friendUsernameData: inputMatchInfo.friendUsernameData.filter(
+          (e) => e.key !== action.payload
+        ),
+      };
+    case 'inputMatchInfo/updateInputMatchUniversities':
+      return { ...inputMatchInfo, matchUniversities: action.payload };
+    case 'inputMatchInfo/updateInputMatchInfoAgeRange':
+      return { ...inputMatchInfo, ageRange: action.payload };
+    case 'inputMatchInfo/updateInputAvailableDates':
+      return { ...inputMatchInfo, availableDates: action.payload };
+    case 'inputMatchInfo/resetInputMatchInfo':
+      return initialInputMatchInfo;
     default:
-      return matchInfo;
+      return inputMatchInfo;
   }
 };

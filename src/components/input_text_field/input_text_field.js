@@ -19,7 +19,7 @@ const textFieldStyles = makeStyles({
     justifyContent: 'center',
     marginLeft: 'auto',
     marginRight: 'auto',
-    width: '80vw',
+    width: (props) => props.width,
   },
 });
 
@@ -53,8 +53,8 @@ const passwordTextFieldStyles = makeStyles((theme) => ({
 }));
 
 export const InputTextField = (props) => {
-  const { onChange, error, label, helperText } = props;
-  const classes = textFieldStyles();
+  const { value, onChange, error, label, helperText } = props;
+  const classes = textFieldStyles(props);
 
   return (
     <form
@@ -63,14 +63,26 @@ export const InputTextField = (props) => {
       noValidate
       autoComplete="off"
     >
-      <TextField
-        fullWidth={true}
-        onChange={onChange}
-        required={true}
-        error={error}
-        label={label}
-        helperText={helperText}
-      />
+      {value !== undefined ? (
+        <TextField
+          value={value}
+          fullWidth={true}
+          onChange={onChange}
+          required={true}
+          error={error}
+          label={label}
+          helperText={helperText}
+        />
+      ) : (
+        <TextField
+          fullWidth={true}
+          onChange={onChange}
+          required={true}
+          error={error}
+          label={label}
+          helperText={helperText}
+        />
+      )}
     </form>
   );
 };
@@ -80,18 +92,23 @@ export const EmailInputField = (props) => {
     emailAddress,
     onChangeField,
     onChangeSelect,
-    regexError,
-    inavailableError,
+    error,
     label,
     helperText,
   } = props;
   const classes = emailTextFieldStyles();
 
   return (
-    <div className="EmailInputField">
+    <div className="EmailInputField" style={{ width: '100%' }}>
       <div
         className="EmailInput"
-        style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'row',
+          width: '100%',
+        }}
       >
         <form
           className={classes.root}
@@ -103,7 +120,7 @@ export const EmailInputField = (props) => {
             fullWidth={true}
             onChange={(e) => onChangeField(e.target.value)}
             required={true}
-            error={regexError || inavailableError}
+            error={error}
             label={label}
           />
         </form>
@@ -114,9 +131,7 @@ export const EmailInputField = (props) => {
           onChange={(e) => onChangeSelect(e.target.value)}
         />
       </div>
-      <FormHelperText error={regexError || inavailableError}>
-        {regexError || inavailableError ? helperText : ''}
-      </FormHelperText>
+      <FormHelperText error={error}>{error ? helperText : ''}</FormHelperText>
     </div>
   );
 };
@@ -139,7 +154,11 @@ export const PasswordInputField = (props) => {
 
   return (
     <FormControl className={clsx(classes.margin, classes.textField)}>
-      <InputLabel className={classes.label} error={error} style={{color: 'rgba(0, 0, 0, 0.5)'}}>
+      <InputLabel
+        className={classes.label}
+        error={error}
+        style={{ color: 'rgba(0, 0, 0, 0.5)' }}
+      >
         {label}
       </InputLabel>
       <Input
@@ -147,8 +166,7 @@ export const PasswordInputField = (props) => {
         value={values.password}
         onChange={(e) => {
           setValues({ ...values, password: e.target.value });
-          if(typeof onChange !== 'undefined')
-            onChange(e);
+          if (typeof onChange !== 'undefined') onChange(e);
         }}
         onSubmit={(e) => e.preventDefault()}
         error={error}
@@ -180,8 +198,7 @@ EmailInputField.propTypes = {
   emailAddress: PropTypes.string.isRequired,
   onChangeField: PropTypes.func.isRequired,
   onChangeSelect: PropTypes.func.isRequired,
-  regexError: PropTypes.bool.isRequired,
-  inavailableError: PropTypes.bool.isRequired,
+  error: PropTypes.bool.isRequired,
   label: PropTypes.string.isRequired,
   helperText: PropTypes.string.isRequired,
 };

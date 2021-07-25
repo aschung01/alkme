@@ -1,0 +1,38 @@
+.AdminHome {
+  height: 100vh;
+  position: relative;
+  background-color: #fcfafa;
+  overflow: hidden;
+}
+
+.AdminHomeView {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+.AdminHomeHeader {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.AdminRoutes {
+  margin-top: 3vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.TopRouteButtonLink {
+  text-decoration: none;
+  color: inherit;
+  margin: 0 2vw;
+}
+
+.RouteButtonLink {
+  margin: 10px 10vw;
+  text-decoration: none;
+  color: inherit;
+}

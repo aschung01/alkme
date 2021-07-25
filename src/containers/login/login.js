@@ -25,7 +25,7 @@ export const Login = (props) => {
   return (
     <div className="Login">
       <div className="LoginContainer">
-        <Header backRoute="/" />
+        <Header backRoute="/" transparent={true}/>
         <Title titleText={loginTitleText} />
         <div className="InputLoginInfo">
           <div className="InputLoginEmail">
@@ -37,6 +37,7 @@ export const Login = (props) => {
                 dispatch(updateLoginEmail(e.target.value));
               }}
               label="이메일"
+              width="80vw"
             />
           </div>
           <div className="InputLoginPassword">

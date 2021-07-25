@@ -1,36 +1,50 @@
 .Match {
-  display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
+  bottom: 0;
+  overflow: auto;
   height: 100vh;
   width: 100vw;
 }
 
-.Page1,
-.Page2,
-.Page3,
-.Page4 {
-  position: initial;
+.MatchPage1,
+.MatchPage2,
+.MatchPage3,
+.MatchPage4,
+.MatchPage5,
+.MatchPage6 {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: fixed;
+  top: 25vh;
   z-index: 10;
+  height: 56vh;
+  width: 100vw;
+  padding-bottom: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-.Title {
-  position: initial;
+.MatchTitle {
+  position: fixed;
+  top: 8vh;
+  height: 17vh;
   z-index: 10;
 }
 
 .Background1 {
-  position: absolute;
+  position: fixed;
   z-index: 0;
   height: 30vh;
   width: 100%;
   top: 0;
-  background: linear-gradient(#fffaee, #fbd0ca)
+  background: linear-gradient(#fffaee, #fbd0ca);
 }
 
 .Background2 {
-  position: absolute;
+  position: fixed;
   z-index: 1;
   height: 75vh;
   width: 100%;
@@ -40,76 +54,128 @@
   background-color: #fff;
 }
 
-.Page1 .SelectNumPersons {
+.MatchPage1 .SelectMatchType {
   display: flex;
   flex-direction: column;
   margin: 5vh 10vw;
 }
 
-.Page2 .InputFriendUsername {
+.MatchPage2 .SelectNumPersons {
+  display: flex;
+  flex-direction: column;
   margin: 5vh 10vw;
 }
 
-.Page3 .InputMatchConditions {
+.MatchPage3 .FriendUsernameGuideText {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-self: flex-start;
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+
+.MatchPage3 .FriendUsernameGuideText > p {
+  padding: 0px;
+  margin: 5px;
+}
+
+.MatchPage3 .InputFriendUsername {
+  margin: 1vh 7.5vw 5vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 85vw;
+}
+
+.InputFriendUsernameTextField {
+  width: 75vw;
+}
+
+.MatchPage4 .InputMatchConditions {
   display: flex;
   flex-direction: column;
   margin: 5vh 8vw;
 }
 
-.Page3 .InputMatchConditions .SelectUniversity {
+.MatchPage4 .InputMatchConditions .SelectUniversity {
   display: flex;
   flex-direction: column;
   width: 84vw;
   padding: 0 10px;
 }
 
-.Page3 .InputMatchConditions .SelectUniversity > p {
+.MatchPage4 .InputMatchConditions .SelectUniversity .SelectUniversityHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.MatchPage4 .InputMatchConditions .SelectUniversity .SelectUniversityHeader > p {
   font-family: 'Noto Sans';
   font-size: 18px;
   font-weight: 600;
   font-stretch: extra-condensed;
+  margin-right: 20px;
 }
 
-.Page3 .InputMatchConditions .SelectUniversity > p > span {
+.MatchPage4 .InputMatchConditions .SelectUniversity .SelectUniversityHeader > p > span {
   font-size: 17px;
   font-weight: normal;
 }
 
-.Page3 .InputMatchConditions .SelectUniversity .SelectUniversityButtons {
+.MatchPage4 .InputMatchConditions .SelectUniversity .SelectUniversityButtons {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
 
-.Page3 .InputMatchConditions .InputAgeRange {
+.MatchPage4 .InputMatchConditions .InputAgeRange {
   display: flex;
   flex-direction: column;
   width: 80vw;
   padding: 0 10px;
 }
 
-.Page3 .InputMatchConditions .InputAgeRange > p {
+.MatchPage4 .InputMatchConditions .InputAgeRange > p {
   font-family: 'Noto Sans';
   font-size: 18px;
   font-weight: 600;
   font-stretch: extra-condensed;
-  margin-bottom: 50px;
+  margin-bottom: 65px;
 }
 
-.Page3 .InputMatchConditions .InputAgeRange > p > span {
+.MatchPage4 .InputMatchConditions .InputAgeRange > p > span {
   font-size: 17px;
   font-weight: normal;
 }
 
-.Page4 .MatchNotification {
+.MatchPage5 .AvailableDatesGuideText {
+  margin: 20px 20px;
+}
+
+.MatchPage5 .MultipleDatePicker {
+  display: flex;
+  height: max-content;
+  width: 100%;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-bottom: 10px;
+}
+
+.MatchPage6 .MatchNotification {
   display: flex;
   margin: 5vh 10vw;
 }
 
 .NavigationButton {
-  position: absolute;
+  height: 9vh;
+  position: fixed;
   z-index: 11;
-  bottom: 2vh;
-  margin: 10vh 10vw;
-  color: inherit;
+  top: auto;
+  bottom:0;
+  margin: 4vh 10vw 6vh;
 }

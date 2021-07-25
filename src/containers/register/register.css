@@ -8,7 +8,6 @@
 
 .Page1 .InputEmail {
   margin: 5vh 10vw;
-
 }
 
 .Page2 .InputPassword {
@@ -21,7 +20,6 @@
 
 .Page3 .InputUsername {
   margin: 5vh 10vw;
-
 }
 
 .Page4 .InputUserInfo {
@@ -37,8 +35,15 @@
   margin-right: 30px;
 }
 
+.Page4 .InputUserInfo .SelectGender {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: flex-start;
+}
+
 .Page4 .InputUserInfo .SelectGender .RadioSelect {
-  padding: 0 10px;
+  padding: 10px 30px 10px;
 }
 
 .Page4 .InputUserInfo .SelectGender > p {
@@ -49,7 +54,13 @@
   font-weight: 600;
 }
 
-.NavigationButton {
+.Page4 .InputUserInfo .SelectAge .SelectAgeInputSlider {
+  margin-top: 50px;
+}
+
+.RegisterPageNavigationButton {
   position: absolute;
-  top: 75.5vh;
+  top: 85.5vh;
+  left: 50%;
+  transform: translate(-50%, 0);
 }

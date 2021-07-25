@@ -1,62 +1,25 @@
 .Home {
   height: 100vh;
   position: relative;
-  background-color: #fffaee;
+  background-color: #fcfafa;
   overflow: hidden;
 }
 
-.HomeTitle {
+.HomeView {
   position: absolute;
   left: 0;
   right: 0;
+  top: 0;
+}
+
+.HomeHeader {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
 }
 
-.Dot1 {
-  position: absolute;
-  top: 5vh;
-  left: 35vw;
-  height: 40px;
-  width: 40px;
-  background-color: #fde3df;
-  border-radius: 50%;
-}
-
-.Dot2 {
-  position: absolute;
-  top: 10vh;
-  left: 5vw;
-  height: 100px;
-  width: 100px;
-  background-color: #fbd0ca;
-  border-radius: 50%;
-}
-
-.Dot3 {
-  position: absolute;
-  top: 30vh;
-  right: -5vw;
-  height: 200px;
-  width: 200px;
-  background-color: #f4838a;
-  border-radius: 50%;
-}
-
-.Dot4 {
-  position: absolute;
-  bottom: -15vh;
-  left: -17vw;
-  height: 300px;
-  width: 300px;
-  background-color: #ef515f;
-  border-radius: 50%;
-}
-
 .Routes {
-  position: absolute;
-  top: 30vh;
+  margin-top: 5vh;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -1,0 +1,89 @@
+:root {
+  --rmdp-primary-crimson: #ef515f;
+  --rmdp-secondary-crimson: #f8b5b9;
+  --rmdp-shadow-crimson: #fffaee;
+  --rmdp-today-crimson: #fbd0ca;
+  --rmdp-hover-crimson: #f58f96;
+  --rmdp-deselect-crimson: #ab5c61;
+}
+
+.crimson .rmdp-wrapper {
+  border: 1px solid var(--rmdp-secondary-crimson);
+  box-shadow: 0 0 5px var(--rmdp-secondary-crimson);
+}
+
+.crimson .rmdp-panel-body li {
+  background-color: var(--rmdp-primary-crimson);
+  box-shadow: 0 0 2px var(--rmdp-secondary-crimson);
+}
+
+.crimson .rmdp-week-day {
+  color: var(--rmdp-primary-crimson);
+}
+
+.crimson .rmdp-day.rmdp-deactive {
+  color: var(--rmdp-secondary-crimson);
+}
+
+.crimson .rmdp-range {
+  background-color: var(--rmdp-primary-crimson);
+  box-shadow: 0 0 3px var(--rmdp-shadow-crimson);
+}
+
+.crimson .rmdp-arrow {
+  border: solid var(--rmdp-primary-crimson);
+  border-width: 0 2px 2px 0;
+}
+
+.crimson .rmdp-arrow-container:hover {
+  background-color: var(--rmdp-primary-crimson);
+  box-shadow: 0 0 3px var(--rmdp-secondary-crimson);
+}
+
+.crimson .rmdp-panel-body::-webkit-scrollbar-thumb {
+  background: var(--rmdp-primary-crimson);
+}
+
+.crimson .rmdp-day.rmdp-today span {
+  background-color: var(--rmdp-today-crimson);
+}
+
+.crimson .rmdp-rtl .rmdp-panel {
+  border-left: unset;
+  border-right: 1px solid var(--rmdp-secondary-crimson);
+}
+
+.crimson .rmdp-day.rmdp-selected span:not(.highlight) {
+  background-color: var(--rmdp-primary-crimson);
+  box-shadow: 0 0 3px var(--rmdp-shadow-crimson);
+}
+
+.crimson .rmdp-day:not(.rmdp-day-hidden) span:hover {
+  background-color: var(--rmdp-hover-crimson) !important;
+}
+
+.crimson .b-deselect {
+  color: var(--rmdp-deselect-crimson);
+  background-color: white;
+}
+
+.crimson .rmdp-action-button {
+  color: var(--rmdp-primary-crimson);
+}
+
+.crimson .rmdp-button:not(.rmdp-action-button) {
+  background-color: var(--rmdp-primary-crimson);
+}
+
+.crimson .rmdp-button:not(.rmdp-action-button):hover {
+  background-color: var(--rmdp-deselect-crimson);
+}
+
+.rmdp-panel div:nth-of-type(2) {
+  height: max-content !important;
+  position: initial !important;
+}
+
+.rmdp-panel-body {
+  position: initial !important;
+}

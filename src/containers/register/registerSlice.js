@@ -133,7 +133,7 @@ const isPasswordValid = (password) => {
   // Min 1 uppercase
   // Min 1 lowercase
   // Min 1 numeric number
-  return password.match(/^([a-zA-Z0-9]{8,})$/);
+  return password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9!@#$%^&*()_=+]{8,64}$/);
 };
 
 const initialPasswordState = {

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 
 const registerOrLoginButtonStyles = makeStyles({
   root: {
@@ -27,34 +28,24 @@ const textButtonStyles = makeStyles({
     borderRadius: 30,
     color: 'black',
     height: '5vh',
+    minWidth: '5px',
   },
 });
-
-// const routeButtonStyles = makeStyles({
-//   root: {
-//     '&:focus': {
-//       backgroundColor: (props) => props.background,
-//     },
-//     backgroundColor: (props) => props.background,
-//     border: 0,
-//     borderRadius: 10,
-//     color: 'black',
-//     height: '12vh',
-//     width: '80vw',
-//   },
-// });
 
 const routeButtonStyles = makeStyles({
   root: {
     '&:focus': {
-      backgroundColor: (props) => props.background,
+      background: (props) => props.background,
     },
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    background: (props) =>
+      props.background !== undefined
+        ? props.background
+        : 'rgba(255, 255, 255, 0.7)',
     border: '1px solid gray',
     borderRadius: 10,
     color: 'black',
     height: '12vh',
-    width: '80vw',
+    width: (props) => (props.width !== undefined ? props.width : '80vw'),
   },
   child: {
     backgroundColor: (props) => props.background,
@@ -68,6 +59,9 @@ const routeButtonStyles = makeStyles({
 const navigationButtonStyles = makeStyles({
   root: {
     '&:focus': {
+      backgroundColor: '#F4838A',
+    },
+    '&:hover': {
       backgroundColor: '#F4838A',
     },
     backgroundColor: '#F4838A',
@@ -90,7 +84,27 @@ const disabledNavigationButtonStyles = makeStyles({
   },
 });
 
-const matchNumPersonsButtonStyles = makeStyles({
+const actionButtonStyles = makeStyles({
+  root: {
+    '&:focus': {
+      background:
+        'linear-gradient(to top right, rgba(255, 250, 2538, 0.9), rgba(239, 81, 95, 0.9))',
+    },
+    '&:hover': {
+      background:
+        'linear-gradient(to top right, rgba(255, 250, 238, 0.9), rgba(239, 81, 95, 0.9))',
+    },
+    background:
+      'linear-gradient(to top right, rgba(255, 250, 238, 0.9), rgba(239, 81, 95, 0.9))',
+    border: 0,
+    borderRadius: 5,
+    color: 'black',
+    height: '9vh',
+    width: '80vw',
+  },
+});
+
+const optionButtonStyles = makeStyles({
   root: {
     '&:focus': {
       backgroundColor: '#FCFAFA',
@@ -99,13 +113,13 @@ const matchNumPersonsButtonStyles = makeStyles({
     border: '0.5px solid gray',
     borderRadius: 10,
     color: 'black',
-    height: '17vh',
+    height: '13vh',
     width: '80vw',
     margin: '10px 0',
   },
 });
 
-const selectedMatchNumPersonsButtonStyles = makeStyles({
+const selectedOptionButtonStyles = makeStyles({
   root: {
     '&:focus': {
       backgroundColor: '#FBD0CA',
@@ -114,7 +128,7 @@ const selectedMatchNumPersonsButtonStyles = makeStyles({
     border: '0.5px solid gray',
     borderRadius: 10,
     color: 'black',
-    height: '17vh',
+    height: '13vh',
     width: '80vw',
     margin: '10px 0',
   },
@@ -146,6 +160,22 @@ const selectUniversityButtonStyles = makeStyles({
   },
 });
 
+const addButtonStyles = makeStyles({
+  root: {
+    backgroundColor: '#EF515F',
+    borderRadius: 30,
+    color: 'white',
+    height: '35px',
+    width: '90px',
+    margin: '10px',
+    padding: '0px',
+    '&:disabled': {
+      backgroundColor: '#E1E1E1',
+      color: 'white',
+    },
+  },
+});
+
 export const RegisterOrLoginButton = (props) => {
   const { buttonText, onClick } = props;
   const classes = registerOrLoginButtonStyles();
@@ -161,13 +191,30 @@ export const RegisterOrLoginButton = (props) => {
 };
 
 export const TextButton = (props) => {
-  const { buttonText } = props;
+  const { color, onClick, buttonText, disabled } = props;
+
   const classes = textButtonStyles();
-  return (
+  return typeof onClick === undefined ? (
     <Button className={classes.root}>
       <span
         style={{
-          color: 'black',
+          color: color,
+          fontSize: '15px',
+          fontFamily: 'Noto-Sans',
+        }}
+      >
+        {buttonText}
+      </span>
+    </Button>
+  ) : (
+    <Button
+      disabled={disabled === undefined ? false : disabled}
+      className={classes.root}
+      onClick={onClick}
+    >
+      <span
+        style={{
+          color: disabled === undefined ? color : disabled ? '#808080' : color,
           fontSize: '15px',
           fontFamily: 'Noto-Sans',
         }}
@@ -179,11 +226,15 @@ export const TextButton = (props) => {
 };
 
 export const RouteButton = (props) => {
-  const { buttonText } = props;
+  const { buttonText, onClick } = props;
   const classes = routeButtonStyles(props);
-  const { root: buttonClass, ...rippleClasses} = classes;
+  const { root: buttonClass, ...rippleClasses } = classes;
   return (
-    <Button className={classes.root} TouchRippleProps={{classes: rippleClasses}}>
+    <Button
+      onClick={onClick}
+      className={classes.root}
+      TouchRippleProps={{ classes: rippleClasses }}
+    >
       <span
         style={{ fontSize: '19px', fontWeight: '500', fontFamily: 'Noto-Sans' }}
       >
@@ -204,18 +255,18 @@ export const NavigationButton = (props) => {
 };
 
 export const DisabledNavigationButton = (props) => {
-  const { buttonText} = props;
+  const { buttonText } = props;
   const classes = disabledNavigationButtonStyles();
   return (
     <Button className={classes.root} disabled>
-      <span style={{color: 'white'}}>{buttonText}</span>
+      <span style={{ color: 'white' }}>{buttonText}</span>
     </Button>
   );
 };
 
-export const MatchNumPersonsButton = (props) => {
+export const ActionButton = (props) => {
   const { buttonText, onClick } = props;
-  const classes = matchNumPersonsButtonStyles();
+  const classes = actionButtonStyles();
   return (
     <Button className={classes.root} onClick={onClick}>
       <span>{buttonText}</span>
@@ -223,15 +274,25 @@ export const MatchNumPersonsButton = (props) => {
   );
 };
 
-export const SelectedMatchBumPersonsButton = (props) => {
+export const OptionButton = (props) => {
   const { buttonText, onClick } = props;
-  const classes = selectedMatchNumPersonsButtonStyles();
+  const classes = optionButtonStyles();
   return (
     <Button className={classes.root} onClick={onClick}>
       <span>{buttonText}</span>
     </Button>
   );
-}
+};
+
+export const SelectedOptionButton = (props) => {
+  const { buttonText, onClick } = props;
+  const classes = selectedOptionButtonStyles();
+  return (
+    <Button className={classes.root} onClick={onClick}>
+      <span>{buttonText}</span>
+    </Button>
+  );
+};
 
 export const SelectUniversityButton = (props) => {
   const { buttonText, onClick, isActivated } = props;
@@ -250,8 +311,22 @@ export const SelectUniversityButton = (props) => {
     );
 };
 
+export const AddButton = (props) => {
+  const { onClick, isActivated } = props;
+  const classes = addButtonStyles();
+  return (
+    <Button
+      className={classes.root}
+      onClick={onClick}
+      disabled={!isActivated}
+      startIcon={<AddCircleRoundedIcon />}
+    >
+      <span>추가</span>
+    </Button>
+  );
+};
+
 RouteButton.propTypes = {
-  background: PropTypes.string.isRequired,
   buttonText: PropTypes.string.isRequired,
 };
 
@@ -260,7 +335,7 @@ NavigationButton.propTypes = {
   buttonText: PropTypes.string.isRequired,
 };
 
-MatchNumPersonsButton.propTypes = {
+OptionButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   buttonText: PropTypes.string.isRequired,
 };
