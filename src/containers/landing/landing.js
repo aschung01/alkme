@@ -14,6 +14,7 @@ export const Landing = () => {
       <div className="LogoSection">
         <img src={mainLogo} alt="logo" style={{width: '130px', margin: '30px 0 10px'}}/>
         <img src={logoText} alt="alkme" style={{width: '250px', margin: '10px'}}/>
+        <p className="Version">beta<br/>0.1.0</p>
         <p className="LandingHeader">알송달송 K 미팅</p>
       </div>
       <div className="RegisterOrLogin">
