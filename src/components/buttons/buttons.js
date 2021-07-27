@@ -88,14 +88,14 @@ const actionButtonStyles = makeStyles({
   root: {
     '&:focus': {
       background:
-        'linear-gradient(to top right, rgba(255, 250, 2538, 0.9), rgba(239, 81, 95, 0.9))',
+        'linear-gradient(to bottom right, #F4838A, #FCD0CA)',
     },
     '&:hover': {
       background:
-        'linear-gradient(to top right, rgba(255, 250, 238, 0.9), rgba(239, 81, 95, 0.9))',
+      'linear-gradient(to bottom right, #F4838A, #FCD0CA)',
     },
     background:
-      'linear-gradient(to top right, rgba(255, 250, 238, 0.9), rgba(239, 81, 95, 0.9))',
+    'linear-gradient(to bottom right, #F4838A, #FCD0CA)',
     border: 0,
     borderRadius: 5,
     color: 'black',
@@ -191,17 +191,17 @@ export const RegisterOrLoginButton = (props) => {
 };
 
 export const TextButton = (props) => {
-  const { color, onClick, buttonText, disabled } = props;
+  const { color, style, onClick, buttonText, disabled } = props;
 
   const classes = textButtonStyles();
   return typeof onClick === undefined ? (
     <Button className={classes.root}>
       <span
-        style={{
+        style={style === undefined ? {
           color: color,
           fontSize: '15px',
           fontFamily: 'Noto-Sans',
-        }}
+        } : style}
       >
         {buttonText}
       </span>
@@ -213,11 +213,11 @@ export const TextButton = (props) => {
       onClick={onClick}
     >
       <span
-        style={{
+        style={ style === undefined ? {
           color: disabled === undefined ? color : disabled ? '#808080' : color,
           fontSize: '15px',
           fontFamily: 'Noto-Sans',
-        }}
+        } : style}
       >
         {buttonText}
       </span>

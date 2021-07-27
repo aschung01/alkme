@@ -23,9 +23,11 @@ import { feedbackPageReducer } from '../containers/feedback/feedbackSlice';
 import { displayWaitingMeetingsReducer } from '../containers/display_waiting_meetings/display_waiting_meetings_Slice';
 import { displayCurrentMeetingsReducer } from '../containers/display_current_meetings/display_current_meetings_Slice';
 import { matchResultsReducer } from '../containers/match_results/match_results_Slice';
+import { landingReducer } from '../containers/landing/landingSlice';
 
 export const store = createStore(
   combineReducers({
+    landing: landingReducer,
     currentUserInfo: currentUserInfoReducer,
     registerPage: registerPageReducer,
     registerPageEmail: registerPageEmailReducer,

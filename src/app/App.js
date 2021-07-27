@@ -148,7 +148,7 @@ export const App = (props) => {
             <Login loginPage={state.loginPage} dispatch={dispatch} />
           </Route>
           <Route path="/">
-            <Landing />
+            <Landing landing={state.landing} dispatch={dispatch}/>
           </Route>
         </Switch>
       </Router>

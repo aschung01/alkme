@@ -1,26 +1,36 @@
 .Landing {
   height: 100vh;
   position: relative;
-  background: #fbd0ca;
+  overflow: hidden;
+}
+
+.MainLanding {
+  position: fixed;
+  height: 70vh;
+  overflow: visible;
+  z-index: 50;
 }
 
 .LogoSection {
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
-  background: linear-gradient(#fff, #fcfafa 70%);
-  height: 65vh;
+  background: linear-gradient(#fbd0ca, 70%, #f7a8ad);
+  height: 70vh;
   width: 100vw;
+  position: absolute;
+  top: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: hidden;
+  z-index: 50;
 }
 
 .Version {
   color: #ef515f;
   font-size: 19px;
   font-weight: bold;
-  position: fixed;
-  z-index: 100;
+  position: absolute;
   transform: rotate(30deg);
   right: 6vw;
   top: 22vh;
@@ -30,16 +40,16 @@
   color: #ef515f;
   font-size: 25px;
   font-weight: bold;
-  font-family:'Noto-Sans';
+  font-family: 'Noto-Sans';
 }
 
 .RegisterOrLogin {
   position: absolute;
-  top: 61vh;
-  bottom: 0vh;
+  bottom: -10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 100;
 }
 
 .RegisterButton {
@@ -50,4 +60,38 @@
 .LoginTextButton {
   text-decoration-color: black;
   margin: 5px auto;
+}
+
+.AboutAlkme {
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.AlkmeInfo {
+  position: fixed;
+  width: 90vw;
+  z-index: 10;
+  left: 50%;
+  transform: translate(-50%, 0);
+  padding-top: 10px;
+}
+
+.AlkmeInfoHeader {
+  color: #ef515f;
+  font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+}
+
+.AlkmeInfoText {
+  color: black;
+  font-size: 16px;
+}
+
+.LandingStartButton {
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
